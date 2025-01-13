@@ -1,0 +1,59 @@
+{
+  "appName": "Job Finder",
+  "login": "Login",
+  "register": "Register",
+  "logout": "Logout",
+  "cancel": "Cancel",
+  "loading": "Loading...",
+  "retry": "Try Again",
+  "auth": {
+    "required": "Please login to view jobs",
+    "invalidCredentials": "Invalid email or password"
+  },
+  "jobs": {
+    "searchPlaceholder": "Search jobs...",
+    "locationPlaceholder": "Location...",
+    "myApplications": "My Applications",
+    "noResults": "No jobs found",
+    "error": "Failed to load jobs",
+    "apply": "Apply",
+    "applied": "Applied",
+    "applying": "Applying...",
+    "withdraw": "Withdraw",
+    "applySuccess": "Successfully applied to job",
+    "applyError": "Failed to apply to job",
+    "withdrawSuccess": "Successfully withdrawn application",
+    "withdrawError": "Failed to withdraw application",
+    "search": "Search",
+    "location": "Location",
+    "orderBy": "Sort by",
+    "orderByDefault": "Default (Date)",
+    "orderBySalary": "Salary",
+    "orderDirection": "Sort Direction",
+    "orderDirectionAsc": "Ascending",
+    "orderDirectionDesc": "Descending",
+    "searchByLocation": "Location",
+    "searchByName": "Job Title",
+    "searchByCompany": "Company",
+    "searchBySalary": "Salary",
+    "filterJobs": "Filter Jobs",
+    "filterDescription": "Find the perfect job opportunity",
+    "searchIn": "Search in",
+    "moreFilters": "More filters",
+    "lessFilters": "Less filters",
+    "applicationCount": "{{count}} applications",
+    "noApplications": "No applications yet",
+    "details": "Details",
+    "show": "Show"
+  },
+  "home": {
+    "title": "Best Position Ever Found",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "getStarted": "Ready to get started?",
+    "getStartedDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "footer": {
+      "privacy": "Privacy",
+      "terms": "Terms"
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "appName": "İş Bul",
+  "login": "Giriş Yap",
+  "register": "Kayıt Ol",
+  "logout": "Çıkış Yap",
+  "cancel": "İptal",
+  "loading": "Yükleniyor...",
+  "retry": "Tekrar Dene",
+  "auth": {
+    "required": "İş ilanlarını görmek için giriş yapın",
+    "invalidCredentials": "Geçersiz email veya şifre"
+  },
+  "jobs": {
+    "searchPlaceholder": "İş ara...",
+    "locationPlaceholder": "Konum...",
+    "myApplications": "Başvurularım",
+    "noResults": "İş bulunamadı",
+    "error": "İşler yüklenirken hata oluştu",
+    "apply": "Başvur",
+    "applied": "Başvuruldu",
+    "applying": "Başvuruluyor...",
+    "withdraw": "Geri Çek",
+    "applySuccess": "Başvuru başarıyla yapıldı",
+    "applyError": "Başvuru yapılırken hata oluştu",
+    "withdrawSuccess": "Başvuru başarıyla geri çekildi",
+    "withdrawError": "Başvuru geri çekilirken hata oluştu",
+    "search": "Ara",
+    "location": "Konum",
+    "orderBy": "Sırala",
+    "orderByDefault": "Varsayılan (Tarih)",
+    "orderBySalary": "Maaş",
+    "orderDirection": "Sıralama Yönü",
+    "orderDirectionAsc": "Artan",
+    "orderDirectionDesc": "Azalan",
+    "searchByLocation": "Konum",
+    "searchByName": "İş Başlığı",
+    "searchByCompany": "Şirket",
+    "searchBySalary": "Maaş",
+    "filterJobs": "İş Filtrele",
+    "filterDescription": "Hayalindeki işi bul",
+    "searchIn": "Şurada ara",
+    "moreFilters": "Daha fazla filtre",
+    "lessFilters": "Daha az filtre",
+    "applicationCount": "{{count}} başvuru",
+    "noApplications": "Henüz başvuru yok",
+    "details": "Detaylar",
+    "show": "Göster"
+  },
+  "home": {
+    "title": "En İyi Pozisyonu Bul",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "getStarted": "Başlamaya Hazır mısın?",
+    "getStartedDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "footer": {
+      "privacy": "Gizlilik",
+      "terms": "Koşullar"
+    }
+  }
+}
