@@ -9,22 +9,20 @@ const axiosInstance = axios.create({
   },
 });
 
-// Request interceptor
 axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("accessToken");
-  if (token && config.headers) {
-    config.headers.Authorization = `Bearer ${token}`;
+  const { accessToken } = useAuthStore.getState();
+
+  if (accessToken && config.headers) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
   }
   return config;
 });
 
-// Response interceptor
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Token expired
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
@@ -38,11 +36,9 @@ axiosInstance.interceptors.response.use(
         useAuthStore.getState().updateAccessToken(accessToken);
         localStorage.setItem("accessToken", accessToken);
 
-        // Retry original request with new token
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return axios(originalRequest);
       } catch (refreshError) {
-        // Refresh token expired/invalid
         useAuthStore.getState().logout();
         return Promise.reject(refreshError);
       }
@@ -51,6 +47,19 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+interface JobParams {
+  page: number;
+  perPage: number;
+  search?: {
+    field: string;
+    query: string;
+  };
+  orderBy?: {
+    field: string;
+    direction: "asc" | "desc";
+  };
+}
 
 export const api = {
   auth: {
@@ -61,38 +70,19 @@ export const api = {
       axiosInstance.post<AuthResponse>("/auth/refresh", { refreshToken }),
   },
   jobs: {
-    getAll: async (params: any) => {
-      const { accessToken } = useAuthStore.getState();
-      return axios.get("/api/jobs", {
+    getAll: async (params: JobParams) => {
+      return axiosInstance.get("/jobs", {
         params,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
       });
     },
     getById: async (id: string) => {
-      const { accessToken } = useAuthStore.getState();
-      return axios.get(`/api/jobs/${id}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      return axiosInstance.get(`/jobs/${id}`);
     },
     apply: async (id: string) => {
-      const { accessToken } = useAuthStore.getState();
-      return axios.post(`/api/jobs/${id}/apply`, null, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      return axiosInstance.post(`/jobs/${id}/apply`, null);
     },
     withdraw: async (id: string) => {
-      const { accessToken } = useAuthStore.getState();
-      return axios.post(`/api/jobs/${id}/withdraw`, null, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      return axiosInstance.post(`/jobs/${id}/withdraw`, null);
     },
   },
 };

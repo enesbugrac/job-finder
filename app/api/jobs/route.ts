@@ -9,7 +9,6 @@ export async function GET(request: Request) {
     }
 
     const token = authHeader.replace("Bearer ", "");
-    console.log("Token being sent to API:", token); // Debug için
 
     const { searchParams } = new URL(request.url);
 
