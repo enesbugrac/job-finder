@@ -10,6 +10,7 @@ import { RegisterModal } from "../auth/RegisterModal";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import Link from "next/link";
 import { Button } from "../ui/Button";
+import { useRouter } from "next/navigation";
 
 export function HeaderActions() {
   const { user, logout } = useAuthStore();
@@ -17,9 +18,16 @@ export function HeaderActions() {
   const [showApplications, setShowApplications] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    setShowApplications(false);
+    router.push("/");
+  };
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-1 md:gap-4">
       <LanguageSwitcher />
 
       {user ? (
@@ -37,7 +45,12 @@ export function HeaderActions() {
             <UserCircleIcon className="w-5 h-5" />
             <span className="text-sm md:block hidden">{user.email}</span>
           </div>
-          <Button variant="ghost" size="sm" onClick={logout} className="hidden md:block">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleLogout}
+            className="hidden md:block"
+          >
             {t("logout")}
           </Button>
         </div>

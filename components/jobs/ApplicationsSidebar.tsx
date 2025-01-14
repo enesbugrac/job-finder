@@ -10,12 +10,14 @@ import { AxiosError } from "axios";
 import { ApplicationCard } from "./ApplicationCard";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { Button } from "../ui/Button";
+import { useRouter } from "next/navigation";
 
 export function ApplicationsSidebar({ onClose }: { onClose?: () => void }) {
   const { t } = useTranslation();
   const { user } = useAuthStore();
   const logout = useAuthStore((state) => state.logout);
   const removeApplication = useAuthStore((state) => state.removeApplication);
+  const router = useRouter();
 
   const { data: appliedJobs, isLoading } = useQuery({
     queryKey: ["appliedJobs", user?.appliedJobs],
@@ -56,6 +58,12 @@ export function ApplicationsSidebar({ onClose }: { onClose?: () => void }) {
     }
   };
 
+  const handleLogout = () => {
+    logout();
+    onClose?.();
+    router.push("/");
+  };
+
   return (
     <div className="flex flex-col h-full">
       <div className="p-4 border-b border-border">
@@ -72,7 +80,7 @@ export function ApplicationsSidebar({ onClose }: { onClose?: () => void }) {
             <Button
               variant="ghost"
               size="sm"
-              onClick={logout}
+              onClick={handleLogout}
               className="md:hidden text-left"
             >
               {t("logout")}
@@ -84,7 +92,6 @@ export function ApplicationsSidebar({ onClose }: { onClose?: () => void }) {
       <div className="flex-1 overflow-y-auto">
         <div className="space-y-4 p-4">
           {isLoading ? (
-            // Loading state
             <div className="space-y-4">
               {[1, 2, 3].map((i) => (
                 <div
@@ -99,7 +106,6 @@ export function ApplicationsSidebar({ onClose }: { onClose?: () => void }) {
               ))}
             </div>
           ) : !appliedJobs?.length ? (
-            // No data state
             <div className="text-center py-8">
               <UserCircleIcon className="w-12 h-12 text-text-secondary mx-auto mb-3" />
               <p className="text-text-secondary font-medium">
@@ -111,7 +117,6 @@ export function ApplicationsSidebar({ onClose }: { onClose?: () => void }) {
               </Button>
             </div>
           ) : (
-            // Data state
             appliedJobs.map((job, index) => (
               <div key={`${job.id}-${index}`} className="border-b border-border pb-4">
                 <ApplicationCard job={job} onWithdraw={handleWithdraw} />

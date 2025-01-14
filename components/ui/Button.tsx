@@ -24,7 +24,6 @@ export function Button({
       className={clsx(
         "inline-flex items-center justify-center rounded-lg font-medium transition-colors",
         {
-          // Variants
           "bg-primary text-white hover:bg-primary/90 disabled:bg-primary/50":
             variant === "primary",
           "bg-background-secondary text-text hover:bg-background-secondary/90 disabled:bg-background-secondary/50":
@@ -33,15 +32,12 @@ export function Button({
             variant === "outline",
           "text-text-secondary hover:text-text disabled:opacity-50": variant === "ghost",
 
-          // Sizes
           "text-sm px-3 py-1.5": size === "sm",
           "text-sm px-4 py-2": size === "md",
           "text-base px-6 py-2.5": size === "lg",
 
-          // Full width
           "w-full": fullWidth,
 
-          // Disabled
           "cursor-not-allowed": disabled || isLoading,
         },
         className

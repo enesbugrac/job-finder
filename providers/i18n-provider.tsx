@@ -15,7 +15,7 @@ initI18n.use(initReactI18next).init({
     en: { translation: en },
     tr: { translation: tr },
   },
-  lng: "tr", // Server-side için varsayılan dil
+  lng: "tr",
   fallbackLng: "tr",
   interpolation: {
     escapeValue: false,
