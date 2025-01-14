@@ -35,69 +35,48 @@ export function JobFilterClient({
 
   const debouncedSearch = useDebounce(localSearch, 500);
 
-  const updateURL = useCallback(
-    (newParams: URLSearchParams) => {
-      router.push(`${pathname}?${newParams.toString()}`);
-    },
-    [pathname, router]
-  );
-
-  const hasFilterChanges = useCallback(
-    (current: typeof localSearch, params: URLSearchParams) => {
-      const hasSearchChanges =
-        (params.has("query") && current.query !== params.get("query")) ||
-        (!params.has("query") && current.query !== "");
-
-      const currentOrderField = params.get("orderField") || "createdAt";
-      const currentOrderDirection = params.get("orderDirection") || "desc";
-
-      const hasOrderChanges =
-        (current.orderField !== "createdAt" &&
-          current.orderField !== currentOrderField) ||
-        (current.orderDirection !== "desc" &&
-          current.orderDirection !== currentOrderDirection);
-
-      return hasSearchChanges || hasOrderChanges;
-    },
-    []
-  );
-
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    if (hasFilterChanges(debouncedSearch, params)) {
-      params.set("page", "1");
-    }
-
-    if (debouncedSearch.query) {
-      params.set("query", debouncedSearch.query);
-      params.set("field", debouncedSearch.field);
-    } else {
-      params.delete("query");
-      params.delete("field");
-    }
-
-    const isDefaultOrder =
-      debouncedSearch.orderField === "createdAt" &&
-      debouncedSearch.orderDirection === "desc";
-
-    if (!isDefaultOrder) {
-      params.set("orderField", debouncedSearch.orderField);
-      params.set("orderDirection", debouncedSearch.orderDirection);
-    } else {
-      params.delete("orderField");
-      params.delete("orderDirection");
-    }
-
-    updateURL(params);
-  }, [debouncedSearch, searchParams, hasFilterChanges, updateURL]);
-
   const handleOrderChange = useCallback((key: string, value: string) => {
     setLocalSearch((prev) => ({
       ...prev,
       [key === "orderField" ? "orderField" : "orderDirection"]: value,
     }));
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    const hasSearchChanges =
+      (params.has("query") && debouncedSearch.query !== params.get("query")) ||
+      (!params.has("query") && debouncedSearch.query !== "");
+
+    const hasOrderChanges =
+      debouncedSearch.orderField !== (params.get("orderField") || "createdAt") ||
+      debouncedSearch.orderDirection !== (params.get("orderDirection") || "desc");
+
+    if (hasSearchChanges || hasOrderChanges) {
+      if (debouncedSearch.query) {
+        params.set("query", debouncedSearch.query);
+        params.set("field", debouncedSearch.field);
+      } else {
+        params.delete("query");
+        params.delete("field");
+      }
+
+      if (debouncedSearch.orderField !== "createdAt") {
+        params.set("orderField", debouncedSearch.orderField);
+      } else {
+        params.delete("orderField");
+      }
+
+      if (debouncedSearch.orderDirection !== "desc") {
+        params.set("orderDirection", debouncedSearch.orderDirection);
+      } else {
+        params.delete("orderDirection");
+      }
+
+      params.set("page", "1");
+      router.push(`${pathname}?${params.toString()}`);
+    }
+  }, [debouncedSearch, searchParams, pathname, router]);
 
   return (
     <div className="space-y-4">
@@ -120,9 +99,13 @@ export function JobFilterClient({
         <div>
           <select
             value={localSearch.field}
-            onChange={(e) =>
-              setLocalSearch((prev) => ({ ...prev, field: e.target.value }))
-            }
+            onChange={(e) => {
+              setLocalSearch((prev) => ({
+                ...prev,
+                field: e.target.value,
+                query: "",
+              }));
+            }}
             className="w-full p-2.5 border border-border rounded-lg bg-background text-text focus:outline-none focus:ring-2 focus:ring-primary/20"
           >
             <option value="name">{t("jobs.searchByName")}</option>

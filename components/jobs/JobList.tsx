@@ -25,16 +25,6 @@ export function JobList({ searchParams }: JobListProps) {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
 
-  const params = new URLSearchParams(window.location.search);
-  const urlParams = {
-    page: params.get("page"),
-    perPage: params.get("perPage"),
-    query: params.get("query"),
-    field: params.get("field"),
-    orderField: params.get("orderField"),
-    orderDirection: params.get("orderDirection"),
-  };
-
   const {
     data: jobsResponse,
     isLoading,
@@ -48,29 +38,19 @@ export function JobList({ searchParams }: JobListProps) {
         throw new Error("No token found");
       }
 
-      const params = new URLSearchParams(window.location.search);
-      const urlParams = {
-        page: params.get("page"),
-        perPage: params.get("perPage"),
-        query: params.get("query"),
-        field: params.get("field"),
-        orderField: params.get("orderField"),
-        orderDirection: params.get("orderDirection"),
-      };
-
       const apiParams = {
-        page: Number(urlParams.page) || 1,
-        perPage: Number(urlParams.perPage) || 10,
-        ...(urlParams.query &&
-          urlParams.field && {
+        page: Number(searchParams.page) || 1,
+        perPage: Number(searchParams.perPage) || 10,
+        ...(searchParams.query &&
+          searchParams.field && {
             search: {
-              field: urlParams.field,
-              query: urlParams.query,
+              field: String(searchParams.field),
+              query: String(searchParams.query),
             },
           }),
         orderBy: {
-          field: urlParams.orderField || "createdAt",
-          direction: (urlParams.orderDirection || "desc") as "asc" | "desc",
+          field: String(searchParams.orderField || "createdAt"),
+          direction: String(searchParams.orderDirection || "desc") as "asc" | "desc",
         },
       };
 
@@ -140,11 +120,11 @@ export function JobList({ searchParams }: JobListProps) {
           {jobsResponse?.data && jobsResponse?.data.length > 0 && (
             <div className="mt-8">
               <Pagination
-                currentPage={Number(urlParams.page) || 1}
+                currentPage={Number(searchParams.page) || 1}
                 totalPages={Math.ceil(
-                  (jobsResponse?.meta.total || 0) / (Number(urlParams.perPage) || 10)
+                  (jobsResponse?.meta.total || 0) / (Number(searchParams.perPage) || 10)
                 )}
-                perPage={Number(urlParams.perPage) || 10}
+                perPage={Number(searchParams.perPage) || 10}
                 onPageChange={(page) => {
                   const params = new URLSearchParams(window.location.search);
 
