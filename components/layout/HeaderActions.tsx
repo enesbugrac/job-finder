@@ -9,6 +9,7 @@ import { LoginModal } from "../auth/LoginModal";
 import { RegisterModal } from "../auth/RegisterModal";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import Link from "next/link";
+import { Button } from "../ui/Button";
 
 export function HeaderActions() {
   const { user, logout } = useAuthStore();
@@ -36,27 +37,18 @@ export function HeaderActions() {
             <UserCircleIcon className="w-5 h-5" />
             <span className="text-sm md:block hidden">{user.email}</span>
           </div>
-          <button
-            onClick={logout}
-            className="text-sm hover:text-primary transition-colors hidden md:block"
-          >
+          <Button variant="ghost" size="sm" onClick={logout} className="hidden md:block">
             {t("logout")}
-          </button>
+          </Button>
         </div>
       ) : (
         <div className="flex items-center gap-4">
-          <button
-            onClick={() => setShowLoginModal(true)}
-            className="text-sm hover:text-primary transition-colors"
-          >
+          <Button variant="ghost" size="sm" onClick={() => setShowLoginModal(true)}>
             {t("login")}
-          </button>
-          <button
-            onClick={() => setShowRegisterModal(true)}
-            className="text-sm hover:text-primary transition-colors"
-          >
+          </Button>
+          <Button variant="primary" size="sm" onClick={() => setShowRegisterModal(true)}>
             {t("register")}
-          </button>
+          </Button>
         </div>
       )}
 
@@ -66,36 +58,7 @@ export function HeaderActions() {
         } z-50`}
       >
         {showApplications && (
-          <div className="h-full flex flex-col">
-            <div className="p-4 border-b border-border">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-text">
-                  {t("jobs.myApplications")}
-                </h2>
-                <button
-                  onClick={() => setShowApplications(false)}
-                  className="text-text-secondary hover:text-text"
-                >
-                  ✕
-                </button>
-              </div>
-              <div className="flex items-center gap-3 pb-4">
-                <UserCircleIcon className="w-8 h-8 text-text-secondary" />
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium">{user?.email}</span>
-                  <button
-                    onClick={logout}
-                    className="text-sm text-text-secondary hover:text-primary transition-colors md:hidden text-left"
-                  >
-                    {t("logout")}
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="flex-1 overflow-y-auto">
-              <ApplicationsSidebar onClose={() => setShowApplications(false)} />
-            </div>
-          </div>
+          <ApplicationsSidebar onClose={() => setShowApplications(false)} />
         )}
       </div>
 

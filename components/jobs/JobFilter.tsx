@@ -4,10 +4,8 @@ import { useFilterStore } from "@/lib/store";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
-import {
-  MagnifyingGlassIcon,
-  AdjustmentsHorizontalIcon,
-} from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { Button } from "../ui/Button";
 
 export function JobFilter() {
   const { filters, setFilters } = useFilterStore();
@@ -66,13 +64,13 @@ export function JobFilter() {
       </div>
 
       <div className="flex justify-end">
-        <button
+        <Button
+          variant="secondary"
+          size="sm"
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className="flex items-center gap-2 text-sm text-text-secondary hover:text-text transition-colors"
         >
-          <AdjustmentsHorizontalIcon className="w-4 h-4" />
           {showAdvanced ? t("jobs.lessFilters") : t("jobs.moreFilters")}
-        </button>
+        </Button>
       </div>
 
       {showAdvanced && (

@@ -33,6 +33,13 @@ export function LanguageSwitcher() {
   const currentLanguage =
     languages.find((lang) => lang.code === i18n.language) || languages[0];
 
+  useEffect(() => {
+    const savedLocale = Cookies.get("NEXT_LOCALE");
+    if (savedLocale && savedLocale !== i18n.language) {
+      i18n.changeLanguage(savedLocale);
+    }
+  }, [i18n]);
+
   const handleLanguageChange = useCallback(
     (code: string) => {
       i18n.changeLanguage(code);
@@ -41,15 +48,6 @@ export function LanguageSwitcher() {
     },
     [i18n]
   );
-
-  useEffect(() => {
-    const savedLocale = Cookies.get("NEXT_LOCALE");
-    if (savedLocale && savedLocale !== i18n.language) {
-      i18n.changeLanguage(savedLocale);
-    } else {
-      Cookies.set("NEXT_LOCALE", i18n.language || "tr");
-    }
-  }, [i18n]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -63,10 +61,10 @@ export function LanguageSwitcher() {
   }, []);
 
   return (
-    <div className="relative z-50" ref={dropdownRef}>
+    <div className="relative z-30" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="px-2.5 py-1.5 text-sm border rounded-md hover:bg-background-secondary flex items-center gap-1.5 transition-colors"
+        className="w-[140px] px-2.5 py-1.5 text-sm border rounded-md hover:bg-background-secondary flex items-center gap-1.5 transition-colors"
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
@@ -79,14 +77,14 @@ export function LanguageSwitcher() {
         />
         <span className="font-medium">{currentLanguage.name}</span>
         <ChevronDownIcon
-          className={`w-3.5 h-3.5 transition-transform duration-200 ${
+          className={`w-3.5 h-3.5 transition-transform duration-200 ml-auto ${
             isOpen ? "rotate-180" : ""
           }`}
         />
       </button>
 
       {isOpen && (
-        <div className="absolute top-full right-0 mt-1 bg-background border border-border rounded-md shadow-lg overflow-hidden min-w-[100px] max-h-[300px] overflow-y-auto">
+        <div className="absolute top-full right-0 mt-1 bg-background border border-border rounded-md shadow-lg overflow-hidden w-[140px]">
           {languages.map((language) => (
             <button
               key={language.code}

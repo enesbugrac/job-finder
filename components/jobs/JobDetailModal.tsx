@@ -7,6 +7,7 @@ import { toast } from "react-hot-toast";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/lib/store";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { Button } from "../ui/Button";
 
 interface JobDetailModalProps {
   job: Job;
@@ -76,27 +77,17 @@ export function JobDetailModal({ job, onClose, isApplied }: JobDetailModalProps)
             </div>
 
             <div className="flex justify-end gap-4 mt-8">
-              <button
-                onClick={onClose}
-                className="px-4 py-2 text-text-secondary hover:text-text"
-              >
+              <Button variant="ghost" onClick={onClose}>
                 {t("cancel")}
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="primary"
                 onClick={() => applyToJob()}
                 disabled={isApplied || isPending}
-                className={`px-6 py-2 rounded-lg transition-colors ${
-                  isApplied
-                    ? "bg-green-500 text-white"
-                    : "bg-primary hover:bg-primary-hover text-white disabled:opacity-50"
-                }`}
+                isLoading={isPending}
               >
-                {isApplied
-                  ? t("jobs.applied")
-                  : isPending
-                  ? t("jobs.applying")
-                  : t("jobs.apply")}
-              </button>
+                {isApplied ? t("jobs.applied") : t("jobs.apply")}
+              </Button>
             </div>
           </div>
         </div>

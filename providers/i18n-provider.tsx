@@ -5,19 +5,37 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import en from "@/lib/i18n/locales/en.json";
 import tr from "@/lib/i18n/locales/tr.json";
+import Cookies from "js-cookie";
+import { useState, useEffect } from "react";
 
-i18n.use(initReactI18next).init({
+const initI18n = i18n.createInstance();
+
+initI18n.use(initReactI18next).init({
   resources: {
     en: { translation: en },
     tr: { translation: tr },
   },
-  lng: "en",
-  fallbackLng: "en",
+  lng: "tr", // Server-side için varsayılan dil
+  fallbackLng: "tr",
   interpolation: {
     escapeValue: false,
   },
 });
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
-  return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const savedLocale = Cookies.get("NEXT_LOCALE");
+    if (savedLocale) {
+      initI18n.changeLanguage(savedLocale);
+    }
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  return <I18nextProvider i18n={initI18n}>{children}</I18nextProvider>;
 }

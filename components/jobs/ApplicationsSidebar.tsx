@@ -8,10 +8,13 @@ import { Job } from "@/types";
 import { toast } from "react-hot-toast";
 import { AxiosError } from "axios";
 import { ApplicationCard } from "./ApplicationCard";
+import { UserCircleIcon } from "@heroicons/react/24/outline";
+import { Button } from "../ui/Button";
 
 export function ApplicationsSidebar({ onClose }: { onClose?: () => void }) {
   const { t } = useTranslation();
   const { user } = useAuthStore();
+  const logout = useAuthStore((state) => state.logout);
   const removeApplication = useAuthStore((state) => state.removeApplication);
 
   const { data: appliedJobs, isLoading } = useQuery({
@@ -30,8 +33,6 @@ export function ApplicationsSidebar({ onClose }: { onClose?: () => void }) {
       });
 
       const jobs = await Promise.all(jobPromises);
-      console.log("jobs", jobs);
-
       return jobs.filter(
         (job): job is Job =>
           job !== null && job !== undefined && typeof job === "object" && "id" in job
@@ -56,26 +57,68 @@ export function ApplicationsSidebar({ onClose }: { onClose?: () => void }) {
   };
 
   return (
-    <div className="h-full">
-      <div className="divide-y divide-border">
-        {isLoading ? (
-          <div className="p-4 text-center text-text-secondary">{t("loading")}</div>
-        ) : appliedJobs?.length ? (
-          appliedJobs.map(
-            (job, index) =>
-              job && (
-                <ApplicationCard
-                  key={`${job.id}-${index}`}
-                  job={job}
-                  onWithdraw={handleWithdraw}
-                />
-              )
-          )
-        ) : (
-          <div className="p-4 text-center text-text-secondary">
-            {t("jobs.noApplications")}
+    <div className="flex flex-col h-full">
+      <div className="p-4 border-b border-border">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold text-text">{t("jobs.myApplications")}</h2>
+          <button onClick={onClose} className="text-text-secondary hover:text-text">
+            ✕
+          </button>
+        </div>
+        <div className="flex items-center gap-3">
+          <UserCircleIcon className="w-8 h-8 text-text-secondary" />
+          <div className="flex flex-col">
+            <span className="text-sm font-medium">{user?.email}</span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={logout}
+              className="md:hidden text-left"
+            >
+              {t("logout")}
+            </Button>
           </div>
-        )}
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto">
+        <div className="space-y-4 p-4">
+          {isLoading ? (
+            // Loading state
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="animate-pulse bg-background-secondary rounded-lg p-4 space-y-3"
+                >
+                  <div className="h-4 bg-border rounded w-3/4"></div>
+                  <div className="h-3 bg-border rounded w-1/2"></div>
+                  <div className="h-3 bg-border rounded w-1/4"></div>
+                  <div className="h-8 bg-border rounded w-full mt-4"></div>
+                </div>
+              ))}
+            </div>
+          ) : !appliedJobs?.length ? (
+            // No data state
+            <div className="text-center py-8">
+              <UserCircleIcon className="w-12 h-12 text-text-secondary mx-auto mb-3" />
+              <p className="text-text-secondary font-medium">
+                {t("jobs.noApplications")}
+              </p>
+
+              <Button variant="outline" size="sm" onClick={onClose} className="mt-4">
+                {t("jobs.browseJobs")}
+              </Button>
+            </div>
+          ) : (
+            // Data state
+            appliedJobs.map((job, index) => (
+              <div key={`${job.id}-${index}`} className="border-b border-border pb-4">
+                <ApplicationCard job={job} onWithdraw={handleWithdraw} />
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

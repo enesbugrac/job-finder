@@ -1,6 +1,7 @@
 import { Job } from "@/types";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
+import { Button } from "../ui/Button";
 
 interface ApplicationCardProps {
   job: Job;
@@ -34,13 +35,17 @@ export function ApplicationCard({ job, onWithdraw }: ApplicationCardProps) {
             }).format(job.salary)}
           </p>
         </div>
-        <button
+        <Button
+          variant="outline"
+          size="sm"
           onClick={handleWithdraw}
           disabled={isWithdrawing}
-          className="w-full px-3 py-1.5 text-sm bg-error/10 text-error rounded hover:bg-error/20 transition-colors disabled:opacity-50"
+          isLoading={isWithdrawing}
+          className="!bg-error/10 !text-error hover:!bg-error/20 !border-error/20"
+          fullWidth
         >
-          {isWithdrawing ? t("jobs.withdrawing") : t("jobs.withdraw")}
-        </button>
+          {t("jobs.withdraw")}
+        </Button>
       </div>
     </div>
   );

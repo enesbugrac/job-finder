@@ -31,11 +31,11 @@ export default function HomePage() {
               </div>
               <div className="text-text-secondary text-sm">
                 © 2010 — 2024{" "}
-                <Link href="/privacy" className="hover:text-primary">
+                <Link href="/" className="hover:text-primary">
                   {t("home.footer.privacy")}
                 </Link>{" "}
                 —{" "}
-                <Link href="/terms" className="hover:text-primary">
+                <Link href="/" className="hover:text-primary">
                   {t("home.footer.terms")}
                 </Link>
               </div>

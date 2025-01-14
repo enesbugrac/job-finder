@@ -10,6 +10,7 @@ import { Pagination } from "@/components/Pagination";
 import { JobDetailModal } from "@/components/jobs/JobDetailModal";
 import { JobCard } from "./JobCard";
 import { Job, JobsResponse, JobParams } from "@/types";
+import { Button } from "../ui/Button";
 
 export function JobList() {
   const { filters, setFilters } = useFilterStore();
@@ -59,12 +60,13 @@ export function JobList() {
     return (
       <div className="text-center py-8">
         <p className="text-text-secondary mb-4">{t("auth.required")}</p>
-        <button
+        <Button
+          variant="primary"
           onClick={() => setShowLoginModal(true)}
           className="px-4 py-2 bg-primary hover:bg-primary-hover text-white rounded"
         >
           {t("login")}
-        </button>
+        </Button>
         {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
       </div>
     );

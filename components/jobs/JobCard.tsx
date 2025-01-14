@@ -11,6 +11,7 @@ import { useAuthStore } from "@/lib/store";
 import { toast } from "react-hot-toast";
 import { api } from "@/lib/api";
 import { useState } from "react";
+import { Button } from "../ui/Button";
 
 interface JobCardProps {
   job: Job;
@@ -91,21 +92,20 @@ export function JobCard({ job, onSelectJob }: JobCardProps) {
         </div>
 
         <div className="flex flex-row md:flex-col justify-center w-full md:w-auto gap-2">
-          <button
-            onClick={() => onSelectJob(job.id)}
-            className="px-4 py-1.5 bg-black text-white text-sm rounded hover:bg-black/90 transition-colors"
-          >
+          <Button variant="outline" size="sm" onClick={() => onSelectJob(job.id)}>
             {t("jobs.details")}
-          </button>
+          </Button>
 
           {user && user.appliedJobs.includes(job.id) && (
-            <button
+            <Button
+              variant="primary"
+              isLoading={isWithdrawing}
+              size="sm"
               onClick={handleWithdraw}
               disabled={isWithdrawing}
-              className="px-4 py-1.5 text-sm rounded bg-error/10 text-error hover:bg-error/20 transition-colors disabled:opacity-50 whitespace-nowrap"
             >
               {isWithdrawing ? t("jobs.withdrawing") : t("jobs.withdraw")}
-            </button>
+            </Button>
           )}
         </div>
       </div>
