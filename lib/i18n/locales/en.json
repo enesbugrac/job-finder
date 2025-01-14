@@ -12,10 +12,8 @@
     "registrationFailed": "Registration failed",
     "email": "Email",
     "password": "Password",
-    "name": "Name",
     "emailPlaceholder": "Enter your email",
-    "passwordPlaceholder": "Enter your password",
-    "namePlaceholder": "Enter your name"
+    "passwordPlaceholder": "Enter your password"
   },
   "jobs": {
     "title": "Jobs",

@@ -12,10 +12,8 @@
     "registrationFailed": "Kayıt başarısız",
     "email": "E-posta",
     "password": "Şifre",
-    "name": "Ad Soyad",
     "emailPlaceholder": "E-posta adresinizi girin",
-    "passwordPlaceholder": "Şifrenizi girin",
-    "namePlaceholder": "Adınızı girin"
+    "passwordPlaceholder": "Şifrenizi girin"
   },
   "jobs": {
     "title": "İşler",

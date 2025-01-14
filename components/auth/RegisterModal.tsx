@@ -39,14 +39,6 @@ export function RegisterModal({ onClose }: { onClose: () => void }) {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {error && <p className="text-error mb-4">{error}</p>}
         <div>
-          <label className="block text-text-secondary mb-1">{t("auth.name")}</label>
-          <input
-            {...register("name")}
-            placeholder={t("auth.namePlaceholder")}
-            className="w-full p-2 border border-border rounded bg-background-secondary text-text"
-          />
-        </div>
-        <div>
           <label className="block text-text-secondary mb-1">{t("auth.email")}</label>
           <input
             {...register("email")}
