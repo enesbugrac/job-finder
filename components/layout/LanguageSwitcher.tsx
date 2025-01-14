@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useCallback, useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import Cookies from "js-cookie";
 
 interface Language {
   code: string;
@@ -12,8 +13,16 @@ interface Language {
 }
 
 const languages: Language[] = [
-  { code: "en", name: "EN", flag: "en" },
-  { code: "tr", name: "TR", flag: "tr" },
+  {
+    code: "tr",
+    name: "Türkçe",
+    flag: "/flags/tr.svg",
+  },
+  {
+    code: "en",
+    name: "English",
+    flag: "/flags/en.svg",
+  },
 ];
 
 export function LanguageSwitcher() {
@@ -25,12 +34,22 @@ export function LanguageSwitcher() {
     languages.find((lang) => lang.code === i18n.language) || languages[0];
 
   const handleLanguageChange = useCallback(
-    (langCode: string) => {
-      i18n.changeLanguage(langCode).catch(console.error);
+    (code: string) => {
+      i18n.changeLanguage(code);
+      Cookies.set("NEXT_LOCALE", code);
       setIsOpen(false);
     },
     [i18n]
   );
+
+  useEffect(() => {
+    const savedLocale = Cookies.get("NEXT_LOCALE");
+    if (savedLocale && savedLocale !== i18n.language) {
+      i18n.changeLanguage(savedLocale);
+    } else {
+      Cookies.set("NEXT_LOCALE", i18n.language || "tr");
+    }
+  }, [i18n]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -52,7 +71,7 @@ export function LanguageSwitcher() {
         aria-haspopup="true"
       >
         <Image
-          src={`/flags/${currentLanguage.flag}.svg`}
+          src={`${currentLanguage.flag}`}
           alt={currentLanguage.name}
           width={20}
           height={15}
@@ -79,7 +98,7 @@ export function LanguageSwitcher() {
               }`}
             >
               <Image
-                src={`/flags/${language.flag}.svg`}
+                src={`${language.flag}`}
                 alt={language.name}
                 width={18}
                 height={14}

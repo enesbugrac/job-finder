@@ -34,9 +34,7 @@ export function JobFilter() {
 
   return (
     <div className="space-y-4">
-      {/* Ana Arama ve Filtreler */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Arama Alanı */}
         <div className="md:col-span-2">
           <div className="relative">
             <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 z-1 w-5 h-5 text-text-secondary" />
@@ -52,7 +50,6 @@ export function JobFilter() {
           </div>
         </div>
 
-        {/* Arama Alanı Seçimi */}
         <div>
           <select
             value={localSearch.field}
@@ -68,7 +65,6 @@ export function JobFilter() {
         </div>
       </div>
 
-      {/* Gelişmiş Filtreler Butonu */}
       <div className="flex justify-end">
         <button
           onClick={() => setShowAdvanced(!showAdvanced)}
@@ -79,10 +75,8 @@ export function JobFilter() {
         </button>
       </div>
 
-      {/* Gelişmiş Filtreler */}
       {showAdvanced && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-border">
-          {/* Sıralama Alanı */}
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-2">
               {t("jobs.orderBy")}
@@ -106,7 +100,6 @@ export function JobFilter() {
             </select>
           </div>
 
-          {/* Sıralama Yönü */}
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-2">
               {t("jobs.orderDirection")}

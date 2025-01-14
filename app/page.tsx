@@ -8,7 +8,6 @@ export default function HomePage() {
 
   return (
     <main className="h-[calc(100vh-64px)] bg-background flex flex-col">
-      {/* Hero Section - üst kısım için 70% alan */}
       <div className="h-[70%] flex items-center justify-center">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center space-y-4">
@@ -18,7 +17,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Footer Section - alt kısım için 30% alan */}
       <div className="h-[30%] bg-background-secondary flex items-center">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
