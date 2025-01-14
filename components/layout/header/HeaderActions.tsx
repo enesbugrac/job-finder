@@ -4,13 +4,13 @@ import { useAuthStore } from "@/lib/store";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
-import { ApplicationsSidebar } from "../jobs/ApplicationsSidebar";
-import { LoginModal } from "../auth/LoginModal";
-import { RegisterModal } from "../auth/RegisterModal";
-import { LanguageSwitcher } from "./LanguageSwitcher";
 import Link from "next/link";
-import { Button } from "../ui/Button";
 import { useRouter } from "next/navigation";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { Button } from "@/components/ui/Button";
+import { ApplicationsSidebar } from "@/components/jobs/ApplicationsSidebar";
+import { LoginModal } from "@/components/auth/LoginModal";
+import { RegisterModal } from "@/components/auth/RegisterModal";
 
 export function HeaderActions() {
   const { user, logout } = useAuthStore();

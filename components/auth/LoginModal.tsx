@@ -6,7 +6,7 @@ import { api } from "@/lib/api";
 import { useTranslation } from "react-i18next";
 import { useAuthStore } from "@/lib/store";
 import { Button } from "../ui/Button";
-import { Modal } from "../Modal";
+import { Modal } from "../ui/Modal";
 
 interface LoginForm {
   email: string;

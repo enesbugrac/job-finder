@@ -6,7 +6,7 @@ import { useFilterStore, useAuthStore } from "@/lib/store";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { LoginModal } from "@/components/auth/LoginModal";
-import { Pagination } from "@/components/Pagination";
+import { Pagination } from "@/components/jobs/Pagination";
 import { JobDetailModal } from "@/components/jobs/JobDetailModal";
 import { JobCard } from "./JobCard";
 import { Job, JobsResponse, JobParams } from "@/types";

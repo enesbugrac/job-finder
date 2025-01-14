@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HeaderActions } from "./layout/HeaderActions";
+import { HeaderActions } from "./HeaderActions";
 
 export function Header() {
   return (
