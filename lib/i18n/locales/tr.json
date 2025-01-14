@@ -8,7 +8,14 @@
   "retry": "Tekrar Dene",
   "auth": {
     "required": "İş ilanlarını görmek için giriş yapın",
-    "invalidCredentials": "Geçersiz email veya şifre"
+    "invalidCredentials": "Geçersiz email veya şifre",
+    "registrationFailed": "Kayıt başarısız",
+    "email": "E-posta",
+    "password": "Şifre",
+    "name": "Ad Soyad",
+    "emailPlaceholder": "E-posta adresinizi girin",
+    "passwordPlaceholder": "Şifrenizi girin",
+    "namePlaceholder": "Adınızı girin"
   },
   "jobs": {
     "title": "İşler",

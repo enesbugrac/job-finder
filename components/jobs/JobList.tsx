@@ -8,8 +8,6 @@ import { useTranslation } from "react-i18next";
 import { LoginModal } from "@/components/auth/LoginModal";
 import { Pagination } from "@/components/Pagination";
 import { JobDetailModal } from "@/components/jobs/JobDetailModal";
-import { toast } from "react-hot-toast";
-import { AxiosError } from "axios";
 import { JobCard } from "./JobCard";
 import { Job, JobsResponse, JobParams } from "@/types";
 
@@ -19,30 +17,6 @@ export function JobList() {
   const { t } = useTranslation();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
-  const [applyingJobId, setApplyingJobId] = useState<string | null>(null);
-  const addApplication = useAuthStore((state) => state.addApplication);
-
-  const handleApply = async (jobId: string) => {
-    if (!user) {
-      setShowLoginModal(true);
-      return;
-    }
-
-    try {
-      setApplyingJobId(jobId.toString());
-      await api.jobs.apply(jobId);
-      addApplication(jobId);
-      toast.success(t("jobs.applySuccess"));
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.message || t("jobs.applyError"));
-      } else {
-        toast.error(t("jobs.applyError"));
-      }
-    } finally {
-      setApplyingJobId(null);
-    }
-  };
 
   const {
     data: jobsResponse,
@@ -133,13 +107,7 @@ export function JobList() {
         <>
           <div className="space-y-4">
             {jobsResponse?.data.map((job: Job) => (
-              <JobCard
-                key={job.id}
-                job={job}
-                onApply={handleApply}
-                onSelectJob={setSelectedJobId}
-                isApplying={applyingJobId === job.id}
-              />
+              <JobCard key={job.id} job={job} onSelectJob={setSelectedJobId} />
             ))}
           </div>
 

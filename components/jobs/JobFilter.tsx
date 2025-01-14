@@ -39,7 +39,7 @@ export function JobFilter() {
         {/* Arama Alanı */}
         <div className="md:col-span-2">
           <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-secondary" />
+            <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 z-1 w-5 h-5 text-text-secondary" />
             <input
               type="text"
               value={localSearch.query}

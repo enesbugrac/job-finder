@@ -8,7 +8,14 @@
   "retry": "Try Again",
   "auth": {
     "required": "Please login to view jobs",
-    "invalidCredentials": "Invalid email or password"
+    "invalidCredentials": "Invalid email or password",
+    "registrationFailed": "Registration failed",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "emailPlaceholder": "Enter your email",
+    "passwordPlaceholder": "Enter your password",
+    "namePlaceholder": "Enter your name"
   },
   "jobs": {
     "title": "Jobs",

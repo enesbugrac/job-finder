@@ -2,106 +2,109 @@
 
 import { Job } from "@/types";
 import { useTranslation } from "react-i18next";
-import { MapPinIcon, CalendarIcon } from "@heroicons/react/24/outline";
+import {
+  MapPinIcon,
+  BriefcaseIcon,
+  CurrencyDollarIcon,
+} from "@heroicons/react/24/outline";
 import { useAuthStore } from "@/lib/store";
 import { toast } from "react-hot-toast";
 import { api } from "@/lib/api";
+import { useState } from "react";
 
 interface JobCardProps {
   job: Job;
-  onApply: (id: string) => void;
   onSelectJob: (id: string) => void;
-  isApplying: boolean;
 }
 
-export function JobCard({ job, onApply, onSelectJob, isApplying }: JobCardProps) {
+export function JobCard({ job, onSelectJob }: JobCardProps) {
   const { t } = useTranslation();
   const user = useAuthStore((state) => state.user);
   const removeApplication = useAuthStore((state) => state.removeApplication);
+  const [isWithdrawing, setIsWithdrawing] = useState(false);
 
   const handleWithdraw = async () => {
     try {
+      setIsWithdrawing(true);
       await api.jobs.withdraw(job.id);
       removeApplication(job.id);
       toast.success(t("jobs.withdrawSuccess"));
     } catch {
       toast.error(t("jobs.withdrawError"));
+    } finally {
+      setIsWithdrawing(false);
     }
   };
 
   return (
-    <div className="bg-background border border-border rounded-lg p-4 md:p-6 hover:border-border-hover transition-colors">
-      <div className="flex flex-col md:flex-row justify-between gap-4">
-        <div className="flex-1">
-          <div className="flex flex-col md:flex-row md:items-start justify-between mb-4 gap-2">
-            <div>
-              <h3 className="text-lg font-semibold text-text mb-1">{job.name}</h3>
-              <p className="text-text-secondary">{job.companyName}</p>
-            </div>
-            <span className="text-text-secondary whitespace-nowrap">
-              {new Intl.NumberFormat("tr-TR", {
-                style: "currency",
-                currency: "TRY",
-              }).format(job.salary)}
-            </span>
+    <div className="bg-background border border-border rounded-lg p-4 hover:border-border-hover transition-colors">
+      <div className="flex flex-col md:flex-row items-start justify-between gap-4">
+        <div className="flex gap-4">
+          <div className="w-12 h-12 flex-shrink-0 bg-background-secondary rounded-lg flex items-center justify-center">
+            <BriefcaseIcon className="w-6 h-6 text-text-secondary" />
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-4">
-            <div className="flex items-center gap-1 text-text-secondary">
-              <MapPinIcon className="w-4 h-4" />
-              <span>{job.location}</span>
+          <div className="flex-1">
+            <div className="flex items-start justify-between">
+              <h3 className="text-base font-medium text-text">
+                {job.companyName} - {job.name}
+              </h3>
             </div>
-            <div className="flex items-center gap-1 text-text-secondary">
-              <CalendarIcon className="w-4 h-4" />
-              <span>{new Date(job.createdAt).toLocaleDateString()}</span>
+
+            <p className="text-sm text-text-secondary mt-1 line-clamp-2">
+              {job.description}
+            </p>
+
+            <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-text-secondary">
+              <div className="flex items-center gap-1">
+                <MapPinIcon className="w-4 h-4" />
+                <span>Location: {job.location}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <CurrencyDollarIcon className="w-4 h-4" />
+                <span>
+                  Salary:{" "}
+                  {new Intl.NumberFormat("tr-TR", {
+                    style: "currency",
+                    currency: "TRY",
+                  }).format(job.salary)}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-2 mt-3">
+              {job.keywords.slice(0, 3).map((keyword, index) => (
+                <span
+                  key={`${job.id}-${keyword}-${index}`}
+                  className="px-2 py-0.5 bg-background-secondary text-text-secondary rounded text-xs"
+                >
+                  {keyword}
+                </span>
+              ))}
+              {job.keywords.length > 3 && (
+                <span className="px-2 py-0.5 bg-background-secondary text-text-secondary rounded text-xs">
+                  +{job.keywords.length - 3}
+                </span>
+              )}
             </div>
           </div>
-
-          <div className="flex flex-wrap gap-2 mb-4">
-            {job.keywords.slice(0, 3).map((keyword, index) => (
-              <span
-                key={`${job.id}-${keyword}-${index}`}
-                className="px-3 py-1 bg-background-secondary text-text-secondary rounded-full text-sm"
-              >
-                {keyword}
-              </span>
-            ))}
-            {job.keywords.length > 3 && (
-              <span className="px-3 py-1 bg-background-secondary text-text-secondary rounded-full text-sm">
-                +{job.keywords.length - 3}
-              </span>
-            )}
-          </div>
-
-          <p className="text-text-secondary line-clamp-2 mb-4 md:mb-0">
-            {job.description}
-          </p>
         </div>
 
-        <div className="flex md:flex-col gap-2 justify-end">
+        <div className="flex flex-row md:flex-col justify-center w-full md:w-auto gap-2">
           <button
             onClick={() => onSelectJob(job.id)}
-            className="flex-1 md:flex-none px-4 py-2 text-text-secondary hover:text-text transition-colors"
+            className="px-4 py-1.5 bg-black text-white text-sm rounded hover:bg-black/90 transition-colors"
           >
             {t("jobs.details")}
           </button>
-          {user && (
+
+          {user && user.appliedJobs.includes(job.id) && (
             <button
-              onClick={
-                user.appliedJobs.includes(job.id) ? handleWithdraw : () => onApply(job.id)
-              }
-              disabled={isApplying}
-              className={`flex-1 md:flex-none px-4 py-2 rounded-lg transition-colors ${
-                user.appliedJobs.includes(job.id)
-                  ? "bg-error/10 text-error hover:bg-error/20"
-                  : "bg-primary hover:bg-primary/90 text-white disabled:opacity-50"
-              }`}
+              onClick={handleWithdraw}
+              disabled={isWithdrawing}
+              className="px-4 py-1.5 text-sm rounded bg-error/10 text-error hover:bg-error/20 transition-colors disabled:opacity-50 whitespace-nowrap"
             >
-              {user.appliedJobs.includes(job.id)
-                ? t("jobs.withdraw")
-                : isApplying
-                ? t("jobs.applying")
-                : t("jobs.apply")}
+              {isWithdrawing ? t("jobs.withdrawing") : t("jobs.withdraw")}
             </button>
           )}
         </div>

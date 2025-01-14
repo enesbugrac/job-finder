@@ -37,18 +37,20 @@ export function LoginModal({ onClose }: { onClose: () => void }) {
         <h2 className="text-2xl font-bold text-text mb-4">{t("login")}</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="block text-text-secondary mb-1">Email</label>
+            <label className="block text-text-secondary mb-1">{t("auth.email")}</label>
             <input
               {...register("email")}
               type="email"
+              placeholder={t("auth.emailPlaceholder")}
               className="w-full p-2 border border-border rounded bg-background-secondary text-text"
             />
           </div>
           <div>
-            <label className="block text-text-secondary mb-1">Password</label>
+            <label className="block text-text-secondary mb-1">{t("auth.password")}</label>
             <input
               {...register("password")}
               type="password"
+              placeholder={t("auth.passwordPlaceholder")}
               className="w-full p-2 border border-border rounded bg-background-secondary text-text"
             />
           </div>
