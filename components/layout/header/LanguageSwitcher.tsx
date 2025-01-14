@@ -5,6 +5,7 @@ import { useCallback, useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import Cookies from "js-cookie";
+import { useRouter, usePathname } from "next/navigation";
 
 interface Language {
   code: string;
@@ -28,6 +29,8 @@ const languages: Language[] = [
 export function LanguageSwitcher() {
   const { i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const currentLanguage =
@@ -42,11 +45,11 @@ export function LanguageSwitcher() {
 
   const handleLanguageChange = useCallback(
     (code: string) => {
-      i18n.changeLanguage(code);
-      Cookies.set("NEXT_LOCALE", code);
+      const newPathname = pathname.replace(`/${i18n.language}`, `/${code}`);
+      router.push(newPathname);
       setIsOpen(false);
     },
-    [i18n]
+    [i18n.language, pathname, router]
   );
 
   useEffect(() => {

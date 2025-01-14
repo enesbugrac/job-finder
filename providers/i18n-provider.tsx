@@ -5,8 +5,12 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import en from "@/lib/i18n/locales/en.json";
 import tr from "@/lib/i18n/locales/tr.json";
-import Cookies from "js-cookie";
 import { useState, useEffect } from "react";
+
+interface I18nProviderProps {
+  children: React.ReactNode;
+  defaultLocale: string;
+}
 
 const initI18n = i18n.createInstance();
 
@@ -22,16 +26,13 @@ initI18n.use(initReactI18next).init({
   },
 });
 
-export function I18nProvider({ children }: { children: React.ReactNode }) {
+export function I18nProvider({ children, defaultLocale }: I18nProviderProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const savedLocale = Cookies.get("NEXT_LOCALE");
-    if (savedLocale) {
-      initI18n.changeLanguage(savedLocale);
-    }
+    initI18n.changeLanguage(defaultLocale);
     setMounted(true);
-  }, []);
+  }, [defaultLocale]);
 
   if (!mounted) {
     return null;

@@ -1,6 +1,6 @@
 import { Inter } from "next/font/google";
 import { Providers } from "@/providers";
-import "./globals.css";
+import "../globals.css";
 import { Header } from "@/components/layout/header/Header";
 import { Metadata } from "next";
 
@@ -11,15 +11,27 @@ export const metadata: Metadata = {
   description: "Find your next job opportunity",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+interface RootLayoutProps {
+  children: React.ReactNode;
+  params: {
+    lang: string;
+  };
+}
+
+export default async function RootLayout({ children, params }: RootLayoutProps) {
+  const { lang } = await params;
   return (
-    <html lang="en">
+    <html lang={lang} suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
-        <Providers>
+        <Providers defaultLocale={lang}>
           <Header />
           {children}
         </Providers>
       </body>
     </html>
   );
+}
+
+export async function generateStaticParams() {
+  return [{ lang: "tr" }, { lang: "en" }];
 }

@@ -1,20 +1,48 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
-  const token = request.cookies.get("accessToken");
+const locales = ["tr", "en"];
+const defaultLocale = "tr";
 
-  if (request.nextUrl.pathname.startsWith("/jobs")) {
-    console.log(token);
+function getLocale(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+  const pathnameLocale = locales.find(
+    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+  );
 
-    if (!token) {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
+  if (pathnameLocale) {
+    return pathnameLocale;
   }
 
-  return NextResponse.next();
+  const cookieLocale = request.cookies.get("NEXT_LOCALE")?.value;
+  if (cookieLocale && locales.includes(cookieLocale)) {
+    return cookieLocale;
+  }
+
+  return defaultLocale;
+}
+
+export function middleware(request: NextRequest) {
+  const token = request.cookies.get("accessToken");
+  const pathname = request.nextUrl.pathname;
+  const locale = getLocale(request);
+
+  const response = NextResponse.next();
+  response.cookies.set("NEXT_LOCALE", locale, { path: "/" });
+
+  if (pathname === "/" || !locales.some((loc) => pathname.startsWith(`/${loc}`))) {
+    return NextResponse.redirect(
+      new URL(`/${locale}${pathname === "/" ? "" : pathname}`, request.url)
+    );
+  }
+
+  if (pathname.includes("/jobs") && !token) {
+    return NextResponse.redirect(new URL(`/${locale}`, request.url));
+  }
+
+  return response;
 }
 
 export const config = {
-  matcher: "/jobs/:path*",
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|flags|.*\\..*).*)"],
 };
