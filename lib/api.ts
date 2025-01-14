@@ -62,8 +62,6 @@ export const api = {
   },
   jobs: {
     getAll: async (params: JobParams) => {
-      console.log("params", params);
-
       return axiosInstance.get("/jobs", {
         params: {
           page: params.page,

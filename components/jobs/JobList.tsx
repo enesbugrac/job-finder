@@ -58,8 +58,6 @@ export function JobList({ searchParams }: JobListProps) {
         orderDirection: params.get("orderDirection"),
       };
 
-      console.log("urlParams:", urlParams);
-
       const apiParams = {
         page: Number(urlParams.page) || 1,
         perPage: Number(urlParams.perPage) || 10,
@@ -75,8 +73,6 @@ export function JobList({ searchParams }: JobListProps) {
           direction: (urlParams.orderDirection || "desc") as "asc" | "desc",
         },
       };
-
-      console.log("apiParams:", apiParams);
 
       const response = await api.jobs.getAll(apiParams);
       return response.data;
@@ -151,7 +147,6 @@ export function JobList({ searchParams }: JobListProps) {
                 perPage={Number(urlParams.perPage) || 10}
                 onPageChange={(page) => {
                   const params = new URLSearchParams(window.location.search);
-                  console.log(page);
 
                   params.set("page", page.toString());
                   router.push(`${pathname}?${params.toString()}`);
