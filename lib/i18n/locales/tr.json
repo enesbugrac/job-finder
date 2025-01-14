@@ -11,6 +11,7 @@
     "invalidCredentials": "Geçersiz email veya şifre"
   },
   "jobs": {
+    "title": "İşler",
     "searchPlaceholder": "İş ara...",
     "locationPlaceholder": "Konum...",
     "myApplications": "Başvurularım",
@@ -44,7 +45,8 @@
     "applicationCount": "{{count}} başvuru",
     "noApplications": "Henüz başvuru yok",
     "details": "Detaylar",
-    "show": "Göster"
+    "show": "Göster",
+    "withdrawing": "Geri Çekiliyor..."
   },
   "home": {
     "title": "En İyi Pozisyonu Bul",

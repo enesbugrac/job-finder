@@ -11,6 +11,7 @@
     "invalidCredentials": "Invalid email or password"
   },
   "jobs": {
+    "title": "Jobs",
     "searchPlaceholder": "Search jobs...",
     "locationPlaceholder": "Location...",
     "myApplications": "My Applications",
@@ -44,7 +45,8 @@
     "applicationCount": "{{count}} applications",
     "noApplications": "No applications yet",
     "details": "Details",
-    "show": "Show"
+    "show": "Show",
+    "withdrawing": "Withdrawing..."
   },
   "home": {
     "title": "Best Position Ever Found",

@@ -11,6 +11,7 @@ import { JobDetailModal } from "@/components/jobs/JobDetailModal";
 import { toast } from "react-hot-toast";
 import { AxiosError } from "axios";
 import { JobCard } from "./JobCard";
+import { Job, JobsResponse, JobParams } from "@/types";
 
 export function JobList() {
   const { filters, setFilters } = useFilterStore();
@@ -48,7 +49,7 @@ export function JobList() {
     isLoading,
     error,
     refetch,
-  } = useQuery({
+  } = useQuery<JobsResponse>({
     queryKey: ["jobs", filters],
     queryFn: async () => {
       const { accessToken } = useAuthStore.getState();
@@ -56,24 +57,23 @@ export function JobList() {
         throw new Error("No token found");
       }
 
-      const params: Record<string, any> = {
+      const params: JobParams = {
         page: filters.page,
         perPage: filters.perPage,
+        ...(filters.search.query && {
+          search: {
+            field: filters.search.field,
+            query: filters.search.query,
+          },
+        }),
+        ...((filters.orderBy.field !== "createdAt" ||
+          filters.orderBy.direction !== "desc") && {
+          orderBy: {
+            field: filters.orderBy.field,
+            direction: filters.orderBy.direction,
+          },
+        }),
       };
-
-      if (filters.search.query) {
-        params.search = {
-          field: filters.search.field,
-          query: filters.search.query,
-        };
-      }
-
-      if (filters.orderBy.field !== "createdAt" || filters.orderBy.direction !== "desc") {
-        params.orderBy = {
-          field: filters.orderBy.field,
-          direction: filters.orderBy.direction,
-        };
-      }
 
       const response = await api.jobs.getAll(params);
       return response.data;
@@ -117,7 +117,6 @@ export function JobList() {
       </div>
     );
   }
-  console.log(jobsResponse);
 
   return (
     <div className="space-y-4">
@@ -126,16 +125,6 @@ export function JobList() {
           <div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto" />
           <p className="mt-2 text-text-secondary">{t("loading")}</p>
         </div>
-      ) : error ? (
-        <div className="text-center p-8">
-          <p className="text-error mb-4">{t("jobs.error")}</p>
-          <button
-            onClick={() => refetch()}
-            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-          >
-            {t("retry")}
-          </button>
-        </div>
       ) : jobsResponse?.data.length === 0 ? (
         <div className="text-center p-8">
           <p className="text-text-secondary">{t("jobs.noResults")}</p>
@@ -143,7 +132,7 @@ export function JobList() {
       ) : (
         <>
           <div className="space-y-4">
-            {jobsResponse?.data.map((job) => (
+            {jobsResponse?.data.map((job: Job) => (
               <JobCard
                 key={job.id}
                 job={job}
@@ -154,7 +143,7 @@ export function JobList() {
             ))}
           </div>
 
-          {jobsResponse?.data.length > 0 && (
+          {jobsResponse?.data && jobsResponse?.data.length > 0 && (
             <div className="mt-8">
               <Pagination
                 currentPage={filters.page}
@@ -173,7 +162,7 @@ export function JobList() {
       {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
       {selectedJobId && (
         <JobDetailModal
-          job={jobsResponse?.data?.find((job) => job.id === selectedJobId)}
+          job={jobsResponse?.data?.find((job: Job) => job.id === selectedJobId) as Job}
           onClose={() => setSelectedJobId(null)}
           isApplied={user?.appliedJobs.includes(selectedJobId) ?? false}
         />

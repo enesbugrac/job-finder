@@ -60,9 +60,9 @@ export function JobDetailModal({ job, onClose, isApplied }: JobDetailModalProps)
             </div>
 
             <div className="flex flex-wrap gap-2">
-              {job.keywords.map((keyword) => (
+              {job.keywords.map((keyword, index) => (
                 <span
-                  key={`${job.id}-${keyword}`}
+                  key={`${job.id}-${keyword}-${index}`}
                   className="px-3 py-1 bg-background-secondary text-text-secondary rounded-full text-sm"
                 >
                   {keyword}

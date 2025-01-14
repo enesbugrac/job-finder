@@ -58,3 +58,16 @@ export interface RegisterForm extends LoginForm {
 export interface JobResponse {
   data: Job;
 }
+
+export interface JobParams {
+  page: number;
+  perPage: number;
+  search?: {
+    field: string;
+    query: string;
+  };
+  orderBy?: {
+    field: string;
+    direction: "asc" | "desc";
+  };
+}

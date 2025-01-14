@@ -1,5 +1,6 @@
 import { Job } from "@/types";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 
 interface ApplicationCardProps {
   job: Job;
@@ -8,6 +9,16 @@ interface ApplicationCardProps {
 
 export function ApplicationCard({ job, onWithdraw }: ApplicationCardProps) {
   const { t } = useTranslation();
+  const [isWithdrawing, setIsWithdrawing] = useState(false);
+
+  const handleWithdraw = async () => {
+    try {
+      setIsWithdrawing(true);
+      await onWithdraw(job.id);
+    } finally {
+      setIsWithdrawing(false);
+    }
+  };
 
   return (
     <div className="p-4 hover:bg-background-secondary transition-colors">
@@ -24,10 +35,11 @@ export function ApplicationCard({ job, onWithdraw }: ApplicationCardProps) {
           </p>
         </div>
         <button
-          onClick={() => onWithdraw(job.id)}
-          className="w-full px-3 py-1.5 text-sm bg-error/10 text-error rounded hover:bg-error/20 transition-colors"
+          onClick={handleWithdraw}
+          disabled={isWithdrawing}
+          className="w-full px-3 py-1.5 text-sm bg-error/10 text-error rounded hover:bg-error/20 transition-colors disabled:opacity-50"
         >
-          {t("jobs.withdraw")}
+          {isWithdrawing ? t("jobs.withdrawing") : t("jobs.withdraw")}
         </button>
       </div>
     </div>

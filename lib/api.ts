@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AuthResponse, LoginForm, RegisterForm } from "@/types";
+import { AuthResponse, JobParams, LoginForm, RegisterForm } from "@/types";
 import { useAuthStore } from "./store";
 
 const axiosInstance = axios.create({
@@ -47,19 +47,6 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-interface JobParams {
-  page: number;
-  perPage: number;
-  search?: {
-    field: string;
-    query: string;
-  };
-  orderBy?: {
-    field: string;
-    direction: "asc" | "desc";
-  };
-}
 
 export const api = {
   auth: {

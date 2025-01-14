@@ -62,9 +62,13 @@ export function ApplicationsSidebar({ onClose }: { onClose?: () => void }) {
           <div className="p-4 text-center text-text-secondary">{t("loading")}</div>
         ) : appliedJobs?.length ? (
           appliedJobs.map(
-            (job) =>
+            (job, index) =>
               job && (
-                <ApplicationCard key={job.id} job={job} onWithdraw={handleWithdraw} />
+                <ApplicationCard
+                  key={`${job.id}-${index}`}
+                  job={job}
+                  onWithdraw={handleWithdraw}
+                />
               )
           )
         ) : (

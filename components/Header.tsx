@@ -38,7 +38,7 @@ export function Header() {
               href="/jobs"
               className="text-text-secondary text-sm md:text-base font-semibold hover:text-primary transition-colors"
             >
-              Jobs
+              {t("jobs.title")}
             </Link>
           )}
           {user ? (

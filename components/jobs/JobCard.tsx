@@ -4,6 +4,8 @@ import { Job } from "@/types";
 import { useTranslation } from "react-i18next";
 import { MapPinIcon, CalendarIcon } from "@heroicons/react/24/outline";
 import { useAuthStore } from "@/lib/store";
+import { toast } from "react-hot-toast";
+import { api } from "@/lib/api";
 
 interface JobCardProps {
   job: Job;
@@ -15,6 +17,17 @@ interface JobCardProps {
 export function JobCard({ job, onApply, onSelectJob, isApplying }: JobCardProps) {
   const { t } = useTranslation();
   const user = useAuthStore((state) => state.user);
+  const removeApplication = useAuthStore((state) => state.removeApplication);
+
+  const handleWithdraw = async () => {
+    try {
+      await api.jobs.withdraw(job.id);
+      removeApplication(job.id);
+      toast.success(t("jobs.withdrawSuccess"));
+    } catch {
+      toast.error(t("jobs.withdrawError"));
+    }
+  };
 
   return (
     <div className="bg-background border border-border rounded-lg p-4 md:p-6 hover:border-border-hover transition-colors">
@@ -45,9 +58,9 @@ export function JobCard({ job, onApply, onSelectJob, isApplying }: JobCardProps)
           </div>
 
           <div className="flex flex-wrap gap-2 mb-4">
-            {job.keywords.slice(0, 3).map((keyword) => (
+            {job.keywords.slice(0, 3).map((keyword, index) => (
               <span
-                key={`${job.id}-${keyword}`}
+                key={`${job.id}-${keyword}-${index}`}
                 className="px-3 py-1 bg-background-secondary text-text-secondary rounded-full text-sm"
               >
                 {keyword}
@@ -74,16 +87,18 @@ export function JobCard({ job, onApply, onSelectJob, isApplying }: JobCardProps)
           </button>
           {user && (
             <button
-              onClick={() => onApply(job.id)}
-              disabled={user.appliedJobs.includes(job.id) || isApplying}
+              onClick={
+                user.appliedJobs.includes(job.id) ? handleWithdraw : () => onApply(job.id)
+              }
+              disabled={isApplying}
               className={`flex-1 md:flex-none px-4 py-2 rounded-lg transition-colors ${
                 user.appliedJobs.includes(job.id)
-                  ? "bg-green-500 text-white"
+                  ? "bg-error/10 text-error hover:bg-error/20"
                   : "bg-primary hover:bg-primary/90 text-white disabled:opacity-50"
               }`}
             >
               {user.appliedJobs.includes(job.id)
-                ? t("jobs.applied")
+                ? t("jobs.withdraw")
                 : isApplying
                 ? t("jobs.applying")
                 : t("jobs.apply")}
