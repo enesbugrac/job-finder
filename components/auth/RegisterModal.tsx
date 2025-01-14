@@ -25,7 +25,7 @@ export function RegisterModal({ onClose }: { onClose: () => void }) {
       const response = await api.auth.register(data);
       setAuth(response.data);
       onClose();
-    } catch (err) {
+    } catch {
       setError(t("auth.registrationFailed"));
     } finally {
       setIsLoading(false);

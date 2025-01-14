@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+
+interface RefreshRequest {
+  refreshToken: string;
+}
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const body = (await request.json()) as RefreshRequest;
     const { refreshToken } = body;
 
     if (!refreshToken) {
@@ -16,10 +20,13 @@ export async function POST(request: Request) {
     );
 
     return NextResponse.json(response.data);
-  } catch (error: any) {
-    return NextResponse.json(
-      { error: error.response?.data?.message || "Failed to refresh token" },
-      { status: error.response?.status || 500 }
-    );
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      return NextResponse.json(
+        { error: error.response?.data?.message || "Failed to refresh token" },
+        { status: error.response?.status || 500 }
+      );
+    }
+    return NextResponse.json({ error: "Failed to refresh token" }, { status: 500 });
   }
 }

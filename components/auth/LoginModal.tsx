@@ -24,7 +24,7 @@ export function LoginModal({ onClose }: { onClose: () => void }) {
       const authData = response.data;
       useAuthStore.getState().setAuth(authData);
       onClose();
-    } catch (err) {
+    } catch {
       setError(t("auth.invalidCredentials"));
     } finally {
       setIsLoading(false);
