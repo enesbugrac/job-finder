@@ -62,8 +62,19 @@ export const api = {
   },
   jobs: {
     getAll: async (params: JobParams) => {
+      console.log("params", params);
+
       return axiosInstance.get("/jobs", {
-        params,
+        params: {
+          page: params.page,
+          perPage: params.perPage,
+          ...(params.search && {
+            "search[field]": params.search.field,
+            "search[query]": params.search.query,
+          }),
+          "orderBy[field]": params.orderBy?.field,
+          "orderBy[direction]": params.orderBy?.direction,
+        },
       });
     },
     getById: async (id: string) => {

@@ -2,22 +2,38 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
-import { useFilterStore, useAuthStore } from "@/lib/store";
+import { useAuthStore } from "@/lib/store";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { LoginModal } from "@/components/auth/LoginModal";
 import { Pagination } from "@/components/jobs/Pagination";
 import { JobDetailModal } from "@/components/jobs/JobDetailModal";
 import { JobCard } from "./JobCard";
-import { Job, JobsResponse, JobParams } from "@/types";
+import { Job, JobsResponse } from "@/types";
 import { Button } from "../ui/Button";
+import { useRouter, usePathname } from "next/navigation";
 
-export function JobList() {
-  const { filters, setFilters } = useFilterStore();
-  const { accessToken, user } = useAuthStore();
+interface JobListProps {
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export function JobList({ searchParams }: JobListProps) {
   const { t } = useTranslation();
+  const { accessToken, user } = useAuthStore();
+  const router = useRouter();
+  const pathname = usePathname();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+
+  const params = new URLSearchParams(window.location.search);
+  const urlParams = {
+    page: params.get("page"),
+    perPage: params.get("perPage"),
+    query: params.get("query"),
+    field: params.get("field"),
+    orderField: params.get("orderField"),
+    orderDirection: params.get("orderDirection"),
+  };
 
   const {
     data: jobsResponse,
@@ -25,32 +41,44 @@ export function JobList() {
     error,
     refetch,
   } = useQuery<JobsResponse>({
-    queryKey: ["jobs", filters],
+    queryKey: ["jobs", searchParams],
     queryFn: async () => {
       const { accessToken } = useAuthStore.getState();
       if (!accessToken) {
         throw new Error("No token found");
       }
 
-      const params: JobParams = {
-        page: filters.page,
-        perPage: filters.perPage,
-        ...(filters.search.query && {
-          search: {
-            field: filters.search.field,
-            query: filters.search.query,
-          },
-        }),
-        ...((filters.orderBy.field !== "createdAt" ||
-          filters.orderBy.direction !== "desc") && {
-          orderBy: {
-            field: filters.orderBy.field,
-            direction: filters.orderBy.direction,
-          },
-        }),
+      const params = new URLSearchParams(window.location.search);
+      const urlParams = {
+        page: params.get("page"),
+        perPage: params.get("perPage"),
+        query: params.get("query"),
+        field: params.get("field"),
+        orderField: params.get("orderField"),
+        orderDirection: params.get("orderDirection"),
       };
 
-      const response = await api.jobs.getAll(params);
+      console.log("urlParams:", urlParams);
+
+      const apiParams = {
+        page: Number(urlParams.page) || 1,
+        perPage: Number(urlParams.perPage) || 10,
+        ...(urlParams.query &&
+          urlParams.field && {
+            search: {
+              field: urlParams.field,
+              query: urlParams.query,
+            },
+          }),
+        orderBy: {
+          field: urlParams.orderField || "createdAt",
+          direction: (urlParams.orderDirection || "desc") as "asc" | "desc",
+        },
+      };
+
+      console.log("apiParams:", apiParams);
+
+      const response = await api.jobs.getAll(apiParams);
       return response.data;
     },
     enabled: !!useAuthStore.getState().accessToken,
@@ -116,13 +144,24 @@ export function JobList() {
           {jobsResponse?.data && jobsResponse?.data.length > 0 && (
             <div className="mt-8">
               <Pagination
-                currentPage={filters.page}
-                totalPages={Math.ceil((jobsResponse?.meta.total || 0) / filters.perPage)}
-                perPage={filters.perPage}
-                onPageChange={(page) => setFilters({ ...filters, page })}
-                onPerPageChange={(perPage) =>
-                  setFilters({ ...filters, perPage, page: 1 })
-                }
+                currentPage={Number(urlParams.page) || 1}
+                totalPages={Math.ceil(
+                  (jobsResponse?.meta.total || 0) / (Number(urlParams.perPage) || 10)
+                )}
+                perPage={Number(urlParams.perPage) || 10}
+                onPageChange={(page) => {
+                  const params = new URLSearchParams(window.location.search);
+                  console.log(page);
+
+                  params.set("page", page.toString());
+                  router.push(`${pathname}?${params.toString()}`);
+                }}
+                onPerPageChange={(perPage) => {
+                  const params = new URLSearchParams(window.location.search);
+                  params.set("perPage", perPage.toString());
+                  params.set("page", "1");
+                  router.push(`${pathname}?${params.toString()}`);
+                }}
               />
             </div>
           )}
