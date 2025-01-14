@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default async function JobsPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const { query, field, orderField, orderDirection } = await searchParams;
   return (
@@ -27,7 +27,7 @@ export default async function JobsPage({
             />
           </Suspense>
         </div>
-        <JobList searchParams={searchParams} />
+        <JobList searchParams={await searchParams} />
       </div>
     </main>
   );
