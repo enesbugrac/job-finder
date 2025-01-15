@@ -32,74 +32,64 @@ export function LanguageSwitcher() {
   const router = useRouter();
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const currentLanguage =
-    languages.find((lang) => lang.code === i18n.language) || languages[0];
-
-  useEffect(() => {
-    const savedLocale = Cookies.get("NEXT_LOCALE");
-    if (savedLocale && savedLocale !== i18n.language) {
-      i18n.changeLanguage(savedLocale);
-    }
-  }, [i18n]);
+  const [selectedLanguage, setSelectedLanguage] = useState(() => {
+    const pathLang = pathname.split("/")[1];
+    return languages.find((lang) => lang.code === pathLang) || languages[0];
+  });
 
   const handleLanguageChange = useCallback(
     (code: string) => {
-      const newPathname = pathname.replace(`/${i18n.language}`, `/${code}`);
+      const newPathname = pathname.replace(`/${selectedLanguage.code}`, `/${code}`);
+      const newLang = languages.find((lang) => lang.code === code) || languages[0];
+
+      setSelectedLanguage(newLang);
+      i18n.changeLanguage(code);
+      Cookies.set("NEXT_LOCALE", code, { path: "/" });
       router.push(newPathname);
       setIsOpen(false);
     },
-    [i18n.language, pathname, router]
+    [selectedLanguage.code, pathname, router, i18n]
   );
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
+    console.log("selectedLanguage", selectedLanguage.code);
+  }, [selectedLanguage.code]);
+  useEffect(() => {
+    console.log("i18n.language", i18n.language);
+  }, [i18n.language]);
   return (
     <div className="relative z-30" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-[140px] px-2.5 py-1.5 text-sm border rounded-md hover:bg-background-secondary flex items-center gap-1.5 transition-colors"
-        aria-expanded={isOpen}
-        aria-haspopup="true"
       >
         <Image
-          src={`${currentLanguage.flag}`}
-          alt={currentLanguage.name}
+          src={selectedLanguage.flag}
+          alt={selectedLanguage.name}
           width={20}
           height={15}
           className="rounded-sm"
         />
-        <span className="font-medium">{currentLanguage.name}</span>
+        <span className="font-medium">{selectedLanguage.name}</span>
         <ChevronDownIcon
-          className={`w-3.5 h-3.5 transition-transform duration-200 ml-auto ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`w-3.5 h-3.5 ml-auto ${isOpen ? "rotate-180" : ""}`}
         />
       </button>
 
       {isOpen && (
-        <div className="absolute top-full right-0 mt-1 bg-background border border-border rounded-md shadow-lg overflow-hidden w-[140px]">
+        <div className="absolute top-full right-0 mt-1 bg-background border border-border rounded-md shadow-lg w-[140px]">
           {languages.map((language) => (
             <button
               key={language.code}
               onClick={() => handleLanguageChange(language.code)}
-              className={`w-full px-3 py-2 text-sm flex items-center gap-2 hover:bg-background-secondary transition-colors ${
-                language.code === i18n.language
+              className={`w-full px-3 py-2 text-sm flex items-center gap-2 hover:bg-background-secondary ${
+                language.code === selectedLanguage.code
                   ? "bg-background-secondary font-medium"
                   : ""
               }`}
             >
               <Image
-                src={`${language.flag}`}
+                src={language.flag}
                 alt={language.name}
                 width={18}
                 height={14}
