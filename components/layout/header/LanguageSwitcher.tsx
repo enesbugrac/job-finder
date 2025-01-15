@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-import { useCallback, useState, useRef, useEffect } from "react";
+import { useCallback, useState, useRef } from "react";
 import Image from "next/image";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import Cookies from "js-cookie";
@@ -51,12 +51,6 @@ export function LanguageSwitcher() {
     [selectedLanguage.code, pathname, router, i18n]
   );
 
-  useEffect(() => {
-    console.log("selectedLanguage", selectedLanguage.code);
-  }, [selectedLanguage.code]);
-  useEffect(() => {
-    console.log("i18n.language", i18n.language);
-  }, [i18n.language]);
   return (
     <div className="relative z-30" ref={dropdownRef}>
       <button
