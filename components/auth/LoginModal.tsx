@@ -22,6 +22,7 @@ export function LoginModal({ onClose }: { onClose: () => void }) {
   type LoginFormData = z.infer<typeof loginSchema>;
 
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const setAuth = useAuthStore((state) => state.setAuth);
 
   const {
@@ -35,12 +36,14 @@ export function LoginModal({ onClose }: { onClose: () => void }) {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
+      setIsLoading(true);
       const response = await api.auth.login(data);
-      const authData = response.data;
-      setAuth(authData);
+      setAuth(response.data);
       onClose();
     } catch (error) {
       setError(getErrorMessage(error));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -76,7 +79,12 @@ export function LoginModal({ onClose }: { onClose: () => void }) {
           <Button variant="ghost" onClick={onClose}>
             {t("cancel")}
           </Button>
-          <Button variant="primary" type="submit" isLoading={false} disabled={!isValid}>
+          <Button
+            variant="primary"
+            type="submit"
+            isLoading={isLoading}
+            disabled={!isValid || isLoading}
+          >
             {t("login")}
           </Button>
         </div>

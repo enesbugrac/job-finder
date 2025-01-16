@@ -8,6 +8,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getErrorMessage } from "@/lib/utils";
+import { Button } from "../ui/Button";
 
 interface RegisterModalProps {
   onClose: () => void;
@@ -24,6 +25,7 @@ export function RegisterModal({ onClose }: RegisterModalProps) {
   type RegisterFormData = z.infer<typeof registerSchema>;
 
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const setAuth = useAuthStore((state) => state.setAuth);
 
   const {
@@ -37,12 +39,14 @@ export function RegisterModal({ onClose }: RegisterModalProps) {
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      setError("");
+      setIsLoading(true);
       const response = await api.auth.register(data);
       setAuth(response.data);
       onClose();
     } catch (error) {
       setError(getErrorMessage(error));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -78,20 +82,17 @@ export function RegisterModal({ onClose }: RegisterModalProps) {
           {error && <p className="text-sm text-error">{error}</p>}
 
           <div className="flex justify-end gap-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-text-secondary hover:text-text"
-            >
+            <Button variant="ghost" onClick={onClose}>
               {t("cancel")}
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="primary"
               type="submit"
-              disabled={!isValid}
-              className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed"
+              isLoading={isLoading}
+              disabled={!isValid || isLoading}
             >
               {t("register")}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
