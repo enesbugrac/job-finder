@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import axios, { AxiosError } from "axios";
-import { LoginForm } from "@/types";
-
+import { AuthForm } from "@/types";
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as LoginForm;
+    const body = (await request.json()) as AuthForm;
     const response = await axios.post(
       "https://novel-project-ntj8t.ampt.app/api/login",
       body

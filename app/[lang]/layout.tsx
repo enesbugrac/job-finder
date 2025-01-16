@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 
 interface RootLayoutProps {
   children: React.ReactNode;
-  params: {
+  params: Promise<{
     lang: string;
-  };
+  }>;
 }
 
 export default async function RootLayout({ children, params }: RootLayoutProps) {
