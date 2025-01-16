@@ -44,10 +44,10 @@ export function LanguageSwitcher() {
 
       setSelectedLanguage(newLang);
       i18n.changeLanguage(code);
-      await setCookie("NEXT_LOCALE", code, { path: "/" });
-      console.log("code", code);
-      router.replace(newPathname);
-      setIsOpen(false);
+
+      // Cookie'yi ayarla ve sayfayı yönlendir
+      await setCookie("NEXT_LOCALE", code);
+      router.push(newPathname);
     },
     [selectedLanguage.code, pathname, router, i18n]
   );
