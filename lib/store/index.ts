@@ -53,7 +53,7 @@ export const useAuthStore = create<AuthState>()(
           user: state.user
             ? {
                 ...state.user,
-                appliedJobs: [...state.user.appliedJobs, jobId],
+                appliedJobs: [...(state.user.appliedJobs || []), jobId],
               }
             : null,
         })),
@@ -62,7 +62,7 @@ export const useAuthStore = create<AuthState>()(
           user: state.user
             ? {
                 ...state.user,
-                appliedJobs: state.user.appliedJobs.filter((id) => id !== jobId),
+                appliedJobs: (state.user.appliedJobs || []).filter((id) => id !== jobId),
               }
             : null,
         })),

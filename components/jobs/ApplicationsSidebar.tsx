@@ -11,6 +11,7 @@ import { ApplicationCard } from "./ApplicationCard";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { Button } from "../ui/Button";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export function ApplicationsSidebar({ onClose }: { onClose?: () => void }) {
   const { t } = useTranslation();
@@ -111,10 +112,11 @@ export function ApplicationsSidebar({ onClose }: { onClose?: () => void }) {
               <p className="text-text-secondary font-medium">
                 {t("jobs.noApplications")}
               </p>
-
-              <Button variant="outline" size="sm" onClick={onClose} className="mt-4">
-                {t("jobs.browseJobs")}
-              </Button>
+              <Link href="/jobs">
+                <Button variant="outline" size="sm" onClick={onClose} className="mt-4">
+                  {t("jobs.browseJobs")}
+                </Button>
+              </Link>
             </div>
           ) : (
             appliedJobs.map((job, index) => (

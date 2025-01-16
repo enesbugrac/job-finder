@@ -144,11 +144,11 @@ export function JobList({ searchParams }: JobListProps) {
       )}
 
       {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
-      {selectedJobId && (
+      {selectedJobId && jobsResponse?.data && (
         <JobDetailModal
-          job={jobsResponse?.data?.find((job: Job) => job.id === selectedJobId) as Job}
+          job={jobsResponse.data.find((job: Job) => job.id === selectedJobId) as Job}
           onClose={() => setSelectedJobId(null)}
-          isApplied={user?.appliedJobs.includes(selectedJobId) ?? false}
+          isApplied={user?.appliedJobs?.includes(selectedJobId) || false}
         />
       )}
     </div>

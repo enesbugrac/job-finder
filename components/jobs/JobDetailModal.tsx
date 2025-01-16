@@ -28,10 +28,16 @@ export function JobDetailModal({ job, onClose, isApplied }: JobDetailModalProps)
       toast.success(t("jobs.applySuccess"));
       onClose();
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Apply error:", error);
       toast.error(t("jobs.applyError"));
     },
   });
+
+  const handleApply = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    applyToJob();
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center !m-0 p-4 z-50">
@@ -82,7 +88,7 @@ export function JobDetailModal({ job, onClose, isApplied }: JobDetailModalProps)
               </Button>
               <Button
                 variant="primary"
-                onClick={() => applyToJob()}
+                onClick={handleApply}
                 disabled={isApplied || isPending}
                 isLoading={isPending}
               >

@@ -10,7 +10,7 @@ import {
 import { useAuthStore } from "@/lib/store";
 import { toast } from "react-hot-toast";
 import { api } from "@/lib/api";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "../ui/Button";
 
 interface JobCardProps {
@@ -23,6 +23,11 @@ export function JobCard({ job, onSelectJob }: JobCardProps) {
   const user = useAuthStore((state) => state.user);
   const removeApplication = useAuthStore((state) => state.removeApplication);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
+
+  const isApplied = useMemo(
+    () => user?.appliedJobs?.includes(job.id) || false,
+    [user, job.id]
+  );
 
   const handleWithdraw = async () => {
     try {
@@ -96,7 +101,7 @@ export function JobCard({ job, onSelectJob }: JobCardProps) {
             {t("jobs.details")}
           </Button>
 
-          {user && user.appliedJobs.includes(job.id) && (
+          {isApplied && (
             <Button
               variant="primary"
               isLoading={isWithdrawing}
