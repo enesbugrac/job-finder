@@ -4,49 +4,58 @@ import type { NextRequest } from "next/server";
 const locales = ["tr", "en"];
 const defaultLocale = "tr";
 
-function getLocale(request: NextRequest) {
+function getLocale(request: NextRequest): string {
   const pathname = request.nextUrl.pathname;
   const pathnameLocale = locales.find(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
-
-  if (pathnameLocale) {
-    console.log("PATHNAME LOCALE", pathnameLocale);
-
-    return pathnameLocale;
-  }
+  if (pathnameLocale) return pathnameLocale;
 
   const cookieLocale = request.cookies.get("NEXT_LOCALE")?.value;
-  if (cookieLocale && locales.includes(cookieLocale)) {
-    console.log("COOKIE LOCALE", cookieLocale);
+  if (cookieLocale && locales.includes(cookieLocale)) return cookieLocale;
 
-    return cookieLocale;
+  const acceptLanguage = request.headers.get("accept-language");
+  if (acceptLanguage) {
+    const browserLocale = acceptLanguage.split(",")[0].split("-")[0];
+    if (locales.includes(browserLocale)) return browserLocale;
   }
 
   return defaultLocale;
 }
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get("accessToken");
   const pathname = request.nextUrl.pathname;
+
+  if (
+    pathname.includes("api") ||
+    pathname.includes("_next") ||
+    pathname.includes("static") ||
+    pathname.includes("favicon") ||
+    pathname.includes("flags") ||
+    pathname.match(/\..*$/)
+  ) {
+    return NextResponse.next();
+  }
+
   const locale = getLocale(request);
 
+  if (!pathname.startsWith(`/${locale}`)) {
+    const url = new URL(request.url);
+    url.pathname = `/${locale}${pathname === "/" ? "" : pathname}`;
+    return NextResponse.redirect(url);
+  }
+
+  if (pathname.includes("/jobs") && !request.cookies.get("accessToken")) {
+    const url = new URL(request.url);
+    url.pathname = `/${locale}`;
+    return NextResponse.redirect(url);
+  }
+
   const response = NextResponse.next();
-  response.cookies.set("NEXT_LOCALE", locale, { path: "/" });
-  console.log("LOCALE", locale);
-
-  if (pathname === "/" || !locales.some((loc) => pathname.startsWith(`/${loc}`))) {
-    console.log("REDIRECT");
-
-    return NextResponse.redirect(
-      new URL(`/${locale}${pathname === "/" ? "" : pathname}`, request.url)
-    );
-  }
-
-  if (pathname.includes("/jobs") && !token) {
-    return NextResponse.redirect(new URL(`/${locale}`, request.url));
-  }
-  console.log("OKEY", pathname);
+  response.cookies.set("NEXT_LOCALE", locale, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365,
+  });
 
   return response;
 }
