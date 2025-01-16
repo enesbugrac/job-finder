@@ -11,11 +11,15 @@ function getLocale(request: NextRequest) {
   );
 
   if (pathnameLocale) {
+    console.log("PATHNAME LOCALE", pathnameLocale);
+
     return pathnameLocale;
   }
 
   const cookieLocale = request.cookies.get("NEXT_LOCALE")?.value;
   if (cookieLocale && locales.includes(cookieLocale)) {
+    console.log("COOKIE LOCALE", cookieLocale);
+
     return cookieLocale;
   }
 
@@ -29,8 +33,11 @@ export function middleware(request: NextRequest) {
 
   const response = NextResponse.next();
   response.cookies.set("NEXT_LOCALE", locale, { path: "/" });
+  console.log("LOCALE", locale);
 
   if (pathname === "/" || !locales.some((loc) => pathname.startsWith(`/${loc}`))) {
+    console.log("REDIRECT");
+
     return NextResponse.redirect(
       new URL(`/${locale}${pathname === "/" ? "" : pathname}`, request.url)
     );
@@ -39,6 +46,7 @@ export function middleware(request: NextRequest) {
   if (pathname.includes("/jobs") && !token) {
     return NextResponse.redirect(new URL(`/${locale}`, request.url));
   }
+  console.log("OKEY", pathname);
 
   return response;
 }
