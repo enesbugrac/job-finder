@@ -6,18 +6,23 @@ const defaultLocale = "tr";
 
 function getLocale(request: NextRequest): string {
   const pathname = request.nextUrl.pathname;
-  const pathnameLocale = locales.find(
-    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
-  );
-  if (pathnameLocale) return pathnameLocale;
+
+  const urlLocale = pathname.split("/")[1];
+  if (locales.includes(urlLocale)) {
+    return urlLocale;
+  }
 
   const cookieLocale = request.cookies.get("NEXT_LOCALE")?.value;
-  if (cookieLocale && locales.includes(cookieLocale)) return cookieLocale;
+  if (cookieLocale && locales.includes(cookieLocale)) {
+    return cookieLocale;
+  }
 
   const acceptLanguage = request.headers.get("accept-language");
   if (acceptLanguage) {
     const browserLocale = acceptLanguage.split(",")[0].split("-")[0];
-    if (locales.includes(browserLocale)) return browserLocale;
+    if (locales.includes(browserLocale)) {
+      return browserLocale;
+    }
   }
 
   return defaultLocale;
@@ -25,6 +30,17 @@ function getLocale(request: NextRequest): string {
 
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+
+  if (
+    pathname.includes("api") ||
+    pathname.includes("_next") ||
+    pathname.includes("static") ||
+    pathname.includes("favicon") ||
+    pathname.includes("flags") ||
+    pathname.match(/\..*$/)
+  ) {
+    return NextResponse.next();
+  }
 
   const locale = getLocale(request);
 
