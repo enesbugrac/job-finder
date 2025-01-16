@@ -17,7 +17,9 @@ export function Modal({ title, children, onClose }: ModalProps) {
             <FaXmark className="w-5 h-5" />
           </Button>
         </div>
-        <div className="p-4">{children}</div>
+        <div className="p-4" role="dialog">
+          {children}
+        </div>
       </div>
     </div>
   );

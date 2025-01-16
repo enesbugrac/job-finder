@@ -39,11 +39,16 @@ export function HeaderActions() {
             {t("jobs.title")}
           </Link>
           <div
+            role="button"
+            aria-label="user-menu"
+            data-testid="user-menu"
             className="flex items-center gap-2"
             onClick={() => setShowApplications(true)}
           >
             <BiUser className="w-5 h-5" />
-            <span className="text-sm md:block hidden">{user.email}</span>
+            <span data-testid="user-email" className="text-sm md:block hidden">
+              {user.email}
+            </span>
           </div>
           <Button
             variant="ghost"

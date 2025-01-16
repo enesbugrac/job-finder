@@ -12,6 +12,7 @@ import { BiUser } from "react-icons/bi";
 import { Button } from "../ui/Button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { FaXmark } from "react-icons/fa6";
 
 export function ApplicationsSidebar({ onClose }: { onClose?: () => void }) {
   const { t } = useTranslation();
@@ -66,13 +67,19 @@ export function ApplicationsSidebar({ onClose }: { onClose?: () => void }) {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div
+      role="complementary"
+      aria-label="applications"
+      className="h-full flex flex-col relative z-50"
+    >
       <div className="p-4 border-b border-border">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold text-text">{t("jobs.myApplications")}</h2>
-          <button onClick={onClose} className="text-text-secondary hover:text-text">
-            ✕
-          </button>
+          <h2 className="text-lg font-semibold">{t("jobs.myApplications")}</h2>
+          {onClose && (
+            <Button variant="ghost" size="sm" onClick={onClose}>
+              <FaXmark className="w-5 h-5" />
+            </Button>
+          )}
         </div>
         <div className="flex items-center gap-3">
           <BiUser className="w-5 h-5" />
