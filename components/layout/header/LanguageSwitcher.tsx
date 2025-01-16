@@ -47,7 +47,7 @@ export function LanguageSwitcher() {
 
       // Cookie'yi ayarla ve sayfayı yönlendir
       await setCookie("NEXT_LOCALE", code);
-      router.push(newPathname);
+      router.replace(newPathname);
     },
     [selectedLanguage.code, pathname, router, i18n]
   );
