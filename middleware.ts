@@ -6,17 +6,24 @@ const defaultLocale = "tr";
 
 function getLocale(request: NextRequest) {
   const localeCookie = request.cookies.get("NEXT_LOCALE");
+  console.log("localcookie", localeCookie);
+
   if (localeCookie?.value && locales.includes(localeCookie.value)) {
     return localeCookie.value;
   }
 
   const pathname = request.nextUrl.pathname;
+
   const pathnameLocale = locales.find(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
   if (pathnameLocale) {
+    console.log("pathnameLocale", pathnameLocale);
+
     return pathnameLocale;
   }
+
+  console.log("defaultLocale", defaultLocale);
 
   return defaultLocale;
 }
