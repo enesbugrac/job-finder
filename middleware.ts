@@ -26,17 +26,6 @@ function getLocale(request: NextRequest): string {
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  if (
-    pathname.includes("api") ||
-    pathname.includes("_next") ||
-    pathname.includes("static") ||
-    pathname.includes("favicon") ||
-    pathname.includes("flags") ||
-    pathname.match(/\..*$/)
-  ) {
-    return NextResponse.next();
-  }
-
   const locale = getLocale(request);
 
   if (!pathname.startsWith(`/${locale}`)) {

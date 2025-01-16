@@ -32,6 +32,7 @@ export function LanguageSwitcher() {
   const router = useRouter();
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
+
   const [selectedLanguage, setSelectedLanguage] = useState(() => {
     const pathLang = pathname.split("/")[1];
     return languages.find((lang) => lang.code === pathLang) || languages[0];
