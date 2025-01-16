@@ -13,7 +13,9 @@
     "email": "E-posta",
     "password": "Şifre",
     "emailPlaceholder": "E-posta adresinizi girin",
-    "passwordPlaceholder": "Şifrenizi girin"
+    "passwordPlaceholder": "Şifrenizi girin",
+    "invalidEmail": "Geçerli bir e-posta adresi girin",
+    "passwordMin": "Şifre en az 8 karakter olmalıdır"
   },
   "jobs": {
     "title": "İşler",

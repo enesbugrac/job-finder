@@ -13,7 +13,9 @@
     "email": "Email",
     "password": "Password",
     "emailPlaceholder": "Enter your email",
-    "passwordPlaceholder": "Enter your password"
+    "passwordPlaceholder": "Enter your password",
+    "invalidEmail": "Please enter a valid email address",
+    "passwordMin": "Password must be at least 8 characters"
   },
   "jobs": {
     "title": "Jobs",

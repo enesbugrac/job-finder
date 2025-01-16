@@ -46,13 +46,9 @@ export interface JobFilters {
   orderByDirection?: "asc" | "desc";
 }
 
-export interface LoginForm {
+export interface AuthForm {
   email: string;
   password: string;
-}
-
-export interface RegisterForm extends LoginForm {
-  name: string;
 }
 
 export interface JobResponse {

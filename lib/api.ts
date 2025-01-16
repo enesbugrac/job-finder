@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AuthResponse, JobParams, LoginForm, RegisterForm } from "@/types";
+import { AuthForm, AuthResponse, JobParams } from "@/types";
 import { useAuthStore } from "./store";
 
 const axiosInstance = axios.create({
@@ -54,8 +54,8 @@ axiosInstance.interceptors.response.use(
 
 export const api = {
   auth: {
-    login: (data: LoginForm) => axiosInstance.post<AuthResponse>("/auth/login", data),
-    register: (data: RegisterForm) =>
+    login: (data: AuthForm) => axiosInstance.post<AuthResponse>("/auth/login", data),
+    register: (data: AuthForm) =>
       axiosInstance.post<AuthResponse>("/auth/register", data),
     refresh: (refreshToken: string) =>
       axiosInstance.post<AuthResponse>("/auth/refresh", { refreshToken }),

@@ -7,29 +7,40 @@ import { useTranslation } from "react-i18next";
 import { useAuthStore } from "@/lib/store";
 import { Button } from "../ui/Button";
 import { Modal } from "../ui/Modal";
-
-interface LoginForm {
-  email: string;
-  password: string;
-}
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { getErrorMessage } from "@/lib/utils";
 
 export function LoginModal({ onClose }: { onClose: () => void }) {
   const { t } = useTranslation();
-  const [error, setError] = useState("");
-  const { register, handleSubmit } = useForm<LoginForm>();
-  const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit = async (data: LoginForm) => {
+  const loginSchema = z.object({
+    email: z.string().email(t("auth.invalidEmail")),
+    password: z.string().min(8, t("auth.passwordMin")),
+  });
+
+  type LoginFormData = z.infer<typeof loginSchema>;
+
+  const [error, setError] = useState("");
+  const setAuth = useAuthStore((state) => state.setAuth);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    mode: "onChange",
+  });
+
+  const onSubmit = async (data: LoginFormData) => {
     try {
-      setIsLoading(true);
       const response = await api.auth.login(data);
       const authData = response.data;
-      useAuthStore.getState().setAuth(authData);
+      setAuth(authData);
       onClose();
-    } catch {
-      setError(t("auth.invalidCredentials"));
-    } finally {
-      setIsLoading(false);
+    } catch (error) {
+      setError(getErrorMessage(error));
     }
   };
 
@@ -44,6 +55,9 @@ export function LoginModal({ onClose }: { onClose: () => void }) {
             placeholder={t("auth.emailPlaceholder")}
             className="w-full p-2 border border-border rounded bg-background-secondary text-text"
           />
+          {errors.email && (
+            <p className="text-sm text-error mt-1">{errors.email.message}</p>
+          )}
         </div>
         <div>
           <label className="block text-text-secondary mb-1">{t("auth.password")}</label>
@@ -53,18 +67,16 @@ export function LoginModal({ onClose }: { onClose: () => void }) {
             placeholder={t("auth.passwordPlaceholder")}
             className="w-full p-2 border border-border rounded bg-background-secondary text-text"
           />
+          {errors.password && (
+            <p className="text-sm text-error mt-1">{errors.password.message}</p>
+          )}
         </div>
-        {error && <p className="text-error">{error}</p>}
+        {error && <p className="text-error text-sm">{error}</p>}
         <div className="flex justify-end gap-4">
           <Button variant="ghost" onClick={onClose}>
             {t("cancel")}
           </Button>
-          <Button
-            variant="primary"
-            type="submit"
-            isLoading={isLoading}
-            disabled={isLoading}
-          >
+          <Button variant="primary" type="submit" isLoading={false} disabled={!isValid}>
             {t("login")}
           </Button>
         </div>
