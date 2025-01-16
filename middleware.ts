@@ -5,6 +5,11 @@ const locales = ["tr", "en"];
 const defaultLocale = "tr";
 
 function getLocale(request: NextRequest) {
+  const localeCookie = request.cookies.get("SELECTED_LANGUAGE");
+  if (localeCookie?.value && locales.includes(localeCookie.value)) {
+    return localeCookie.value;
+  }
+
   const pathname = request.nextUrl.pathname;
   const pathnameLocale = locales.find(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
@@ -12,11 +17,6 @@ function getLocale(request: NextRequest) {
 
   if (pathnameLocale) {
     return pathnameLocale;
-  }
-
-  const localeCookie = request.cookies.get("NEXT_LOCALE");
-  if (localeCookie?.value && locales.includes(localeCookie.value)) {
-    return localeCookie.value;
   }
 
   return defaultLocale;
@@ -34,14 +34,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`/${locale}${pathname}`, request.url));
   }
 
-  const response = NextResponse.next();
-
-  const currentPathLocale = pathname.split("/")[1];
-  if (locales.includes(currentPathLocale)) {
-    response.cookies.set("NEXT_LOCALE", currentPathLocale);
-  }
-
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {

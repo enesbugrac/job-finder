@@ -39,15 +39,23 @@ export function LanguageSwitcher() {
 
   const handleLanguageChange = useCallback(
     async (code: string) => {
-      const newPathname = pathname.replace(`/${selectedLanguage.code}`, `/${code}`);
-      const newLang = languages.find((lang) => lang.code === code) || languages[0];
+      try {
+        await setCookie("SELECTED_LANGUAGE", code, {
+          maxAge: 365 * 24 * 60 * 60,
+          path: "/",
+        });
 
-      setSelectedLanguage(newLang);
-      i18n.changeLanguage(code);
+        await i18n.changeLanguage(code);
 
-      // Cookie'yi ayarla ve sayfayı yönlendir
-      await setCookie("NEXT_LOCALE", code);
-      router.replace(newPathname);
+        const newPathname = pathname.replace(`/${selectedLanguage.code}`, `/${code}`);
+        router.push(newPathname);
+
+        const newLang = languages.find((lang) => lang.code === code) || languages[0];
+        setSelectedLanguage(newLang);
+        setIsOpen(false);
+      } catch (error) {
+        console.error("Language change error:", error);
+      }
     },
     [selectedLanguage.code, pathname, router, i18n]
   );
