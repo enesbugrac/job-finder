@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useCallback, useState, useRef } from "react";
 import Image from "next/image";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import Cookies from "js-cookie";
+import { setCookie } from "cookies-next";
 import { useRouter, usePathname } from "next/navigation";
 
 interface Language {
@@ -38,13 +38,13 @@ export function LanguageSwitcher() {
   });
 
   const handleLanguageChange = useCallback(
-    (code: string) => {
+    async (code: string) => {
       const newPathname = pathname.replace(`/${selectedLanguage.code}`, `/${code}`);
       const newLang = languages.find((lang) => lang.code === code) || languages[0];
 
       setSelectedLanguage(newLang);
       i18n.changeLanguage(code);
-      Cookies.set("NEXT_LOCALE", code, { path: "/" });
+      await setCookie("NEXT_LOCALE", code, { path: "/" });
       console.log("code", code);
       router.replace(newPathname);
       setIsOpen(false);

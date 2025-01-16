@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { User, AuthResponse } from "@/types";
-import Cookies from "js-cookie";
+import { deleteCookie, setCookie } from "cookies-next";
 
 interface AuthState {
   user: User | null;
@@ -36,17 +36,17 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       accessToken: null,
       refreshToken: null,
-      setAuth: (auth) => {
+      setAuth: async (auth) => {
         set({
           user: auth.user,
           accessToken: auth.accessToken,
           refreshToken: auth.refreshToken,
         });
-        Cookies.set("accessToken", auth.accessToken);
+        await setCookie("accessToken", auth.accessToken);
       },
-      updateAccessToken: (token) => {
+      updateAccessToken: async (token) => {
         set({ accessToken: token });
-        Cookies.set("accessToken", token);
+        await setCookie("accessToken", token);
       },
       addApplication: (jobId) =>
         set((state) => ({
@@ -66,9 +66,10 @@ export const useAuthStore = create<AuthState>()(
               }
             : null,
         })),
-      logout: () => {
+      logout: async () => {
         set({ user: null, accessToken: null, refreshToken: null });
-        Cookies.remove("accessToken");
+        await deleteCookie("accessToken");
+        await deleteCookie("refreshToken");
       },
     }),
     {

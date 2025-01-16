@@ -51,8 +51,6 @@ export function middleware(request: NextRequest) {
   }
   console.log("locale", locale);
 
-  console.log(response);
-
   return response;
 }
 
