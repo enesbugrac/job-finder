@@ -42,6 +42,9 @@ export function middleware(request: NextRequest) {
   ) {
     response.cookies.set("NEXT_LOCALE", locale);
   }
+  console.log("locale", locale);
+
+  console.log(response);
 
   return response;
 }

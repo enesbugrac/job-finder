@@ -45,6 +45,7 @@ export function LanguageSwitcher() {
       setSelectedLanguage(newLang);
       i18n.changeLanguage(code);
       Cookies.set("NEXT_LOCALE", code, { path: "/" });
+      console.log("code", code);
       router.replace(newPathname);
       setIsOpen(false);
     },
