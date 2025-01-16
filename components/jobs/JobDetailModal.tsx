@@ -6,8 +6,8 @@ import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { api } from "@/lib/api";
 import { useAuthStore } from "@/lib/store";
-import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Button } from "../ui/Button";
+import { FaXmark } from "react-icons/fa6";
 
 interface JobDetailModalProps {
   job: Job;
@@ -49,7 +49,7 @@ export function JobDetailModal({ job, onClose, isApplied }: JobDetailModalProps)
               <p className="text-text-secondary">{job.companyName}</p>
             </div>
             <button onClick={onClose} className="text-text-secondary hover:text-text">
-              <XMarkIcon className="w-6 h-6" />
+              <FaXmark className="w-6 h-6" />
             </button>
           </div>
 

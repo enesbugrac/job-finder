@@ -8,7 +8,7 @@ import { Job } from "@/types";
 import { toast } from "react-hot-toast";
 import { AxiosError } from "axios";
 import { ApplicationCard } from "./ApplicationCard";
-import { UserCircleIcon } from "@heroicons/react/24/outline";
+import { BiUser } from "react-icons/bi";
 import { Button } from "../ui/Button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -75,7 +75,7 @@ export function ApplicationsSidebar({ onClose }: { onClose?: () => void }) {
           </button>
         </div>
         <div className="flex items-center gap-3">
-          <UserCircleIcon className="w-8 h-8 text-text-secondary" />
+          <BiUser className="w-5 h-5" />
           <div className="flex flex-col">
             <span className="text-sm font-medium">{user?.email}</span>
             <Button
@@ -108,7 +108,7 @@ export function ApplicationsSidebar({ onClose }: { onClose?: () => void }) {
             </div>
           ) : !appliedJobs?.length ? (
             <div className="text-center py-8">
-              <UserCircleIcon className="w-12 h-12 text-text-secondary mx-auto mb-3" />
+              <BiUser className="w-12 h-12 text-text-secondary mx-auto mb-3" />
               <p className="text-text-secondary font-medium">
                 {t("jobs.noApplications")}
               </p>

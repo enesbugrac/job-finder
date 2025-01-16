@@ -2,11 +2,7 @@
 
 import { Job } from "@/types";
 import { useTranslation } from "react-i18next";
-import {
-  MapPinIcon,
-  BriefcaseIcon,
-  CurrencyDollarIcon,
-} from "@heroicons/react/24/outline";
+import { BiMapPin, BiBriefcase, BiDollar } from "react-icons/bi";
 import { useAuthStore } from "@/lib/store";
 import { toast } from "react-hot-toast";
 import { api } from "@/lib/api";
@@ -47,7 +43,7 @@ export function JobCard({ job, onSelectJob }: JobCardProps) {
       <div className="flex flex-col md:flex-row items-start justify-between gap-4">
         <div className="flex gap-4">
           <div className="w-12 h-12 flex-shrink-0 bg-background-secondary rounded-lg flex items-center justify-center">
-            <BriefcaseIcon className="w-6 h-6 text-text-secondary" />
+            <BiBriefcase className="w-6 h-6 text-text-secondary" />
           </div>
 
           <div className="flex-1">
@@ -63,11 +59,11 @@ export function JobCard({ job, onSelectJob }: JobCardProps) {
 
             <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-text-secondary">
               <div className="flex items-center gap-1">
-                <MapPinIcon className="w-4 h-4" />
+                <BiMapPin />
                 <span>Location: {job.location}</span>
               </div>
               <div className="flex items-center gap-1">
-                <CurrencyDollarIcon className="w-4 h-4" />
+                <BiDollar />
                 <span>
                   Salary:{" "}
                   {new Intl.NumberFormat("tr-TR", {

@@ -3,7 +3,7 @@
 import { useAuthStore } from "@/lib/store";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { UserCircleIcon } from "@heroicons/react/24/outline";
+import { BiUser } from "react-icons/bi";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LanguageSwitcher } from "./LanguageSwitcher";
@@ -42,7 +42,7 @@ export function HeaderActions() {
             className="flex items-center gap-2"
             onClick={() => setShowApplications(true)}
           >
-            <UserCircleIcon className="w-5 h-5" />
+            <BiUser className="w-5 h-5" />
             <span className="text-sm md:block hidden">{user.email}</span>
           </div>
           <Button

@@ -1,4 +1,4 @@
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import { useTranslation } from "react-i18next";
 
 interface PaginationProps {
@@ -25,7 +25,7 @@ export function Pagination({
           disabled={currentPage === 1}
           className="p-1 text-text-secondary hover:text-text disabled:opacity-50 disabled:hover:text-text-secondary"
         >
-          <ChevronLeftIcon className="w-5 h-5" />
+          <BiChevronLeft className="w-5 h-5" />
         </button>
         <span className="text-sm text-text-secondary">
           {currentPage}/{totalPages}
@@ -35,7 +35,7 @@ export function Pagination({
           disabled={currentPage === totalPages}
           className="p-1 text-text-secondary hover:text-text disabled:opacity-50 disabled:hover:text-text-secondary"
         >
-          <ChevronRightIcon className="w-5 h-5" />
+          <BiChevronRight className="w-5 h-5" />
         </button>
       </div>
 

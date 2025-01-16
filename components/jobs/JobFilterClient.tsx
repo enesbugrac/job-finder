@@ -3,7 +3,7 @@
 import { useTranslation } from "react-i18next";
 import { useState, useEffect, useCallback } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { BiSearch } from "react-icons/bi";
 import { Button } from "../ui/Button";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
@@ -83,7 +83,7 @@ export function JobFilterClient({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="md:col-span-2">
           <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 z-1 w-5 h-5 text-text-secondary" />
+            <BiSearch className="absolute left-3 top-1/2 -translate-y-1/2 z-1 w-5 h-5 text-text-secondary" />
             <input
               type="text"
               value={localSearch.query}

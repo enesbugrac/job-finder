@@ -3,7 +3,7 @@
 import { useTranslation } from "react-i18next";
 import { useCallback, useState, useRef } from "react";
 import Image from "next/image";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { BiChevronDown } from "react-icons/bi";
 import { setCookie } from "cookies-next";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -75,9 +75,7 @@ export function LanguageSwitcher() {
           className="rounded-sm"
         />
         <span className="font-medium">{selectedLanguage.name}</span>
-        <ChevronDownIcon
-          className={`w-3.5 h-3.5 ml-auto ${isOpen ? "rotate-180" : ""}`}
-        />
+        <BiChevronDown className={`w-3.5 h-3.5 ml-auto ${isOpen ? "rotate-180" : ""}`} />
       </button>
 
       {isOpen && (
