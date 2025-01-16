@@ -40,7 +40,7 @@ export function LanguageSwitcher() {
   const handleLanguageChange = useCallback(
     async (code: string) => {
       try {
-        await setCookie("SELECTED_LANGUAGE", code, {
+        await setCookie("NEXT_LOCALE", code, {
           maxAge: 365 * 24 * 60 * 60,
           path: "/",
         });
