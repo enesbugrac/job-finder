@@ -47,17 +47,17 @@ export function LanguageSwitcher() {
 
         await i18n.changeLanguage(code);
 
-        const newPathname = pathname.replace(`/${selectedLanguage.code}`, `/${code}`);
-        router.push(newPathname);
+        const pathWithoutLocale = pathname.replace(/^\/[^/]+/, "");
+        const newPathname = `/${code}${pathWithoutLocale}`;
 
-        const newLang = languages.find((lang) => lang.code === code) || languages[0];
-        setSelectedLanguage(newLang);
+        setSelectedLanguage(languages.find((lang) => lang.code === code) || languages[0]);
         setIsOpen(false);
+        router.push(newPathname);
       } catch (error) {
         console.error("Language change error:", error);
       }
     },
-    [selectedLanguage.code, pathname, router, i18n]
+    [pathname, router, i18n]
   );
 
   return (

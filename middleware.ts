@@ -10,15 +10,6 @@ function getLocale(request: NextRequest) {
     return localeCookie.value;
   }
 
-  const pathname = request.nextUrl.pathname;
-  const pathnameLocale = locales.find(
-    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
-  );
-
-  if (pathnameLocale) {
-    return pathnameLocale;
-  }
-
   return defaultLocale;
 }
 
@@ -26,12 +17,9 @@ export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const locale = getLocale(request);
 
-  const pathnameIsMissingLocale = locales.every(
-    (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
-  );
-
-  if (pathnameIsMissingLocale) {
-    return NextResponse.redirect(new URL(`/${locale}${pathname}`, request.url));
+  if (!pathname.startsWith(`/${locale}`)) {
+    const newPath = pathname.replace(/^\/[^/]+/, "");
+    return NextResponse.redirect(new URL(`/${locale}${newPath}`, request.url));
   }
 
   return NextResponse.next();
