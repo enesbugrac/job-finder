@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import axios, { AxiosError } from "axios";
+import { authApi, handleApiError } from "@/lib/server/api";
 
 interface RefreshRequest {
   refreshToken: string;
@@ -14,19 +14,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No refresh token provided" }, { status: 401 });
     }
 
-    const response = await axios.post(
-      "https://novel-project-ntj8t.ampt.app/api/refresh",
-      { refreshToken }
-    );
+    const response = await authApi.refresh({ refreshToken });
 
     return NextResponse.json(response.data);
   } catch (error) {
-    if (error instanceof AxiosError) {
-      return NextResponse.json(
-        { error: error.response?.data?.message || "Failed to refresh token" },
-        { status: error.response?.status || 500 }
-      );
-    }
-    return NextResponse.json({ error: "Failed to refresh token" }, { status: 500 });
+    const { error: errorMessage, status } = handleApiError(error);
+    return NextResponse.json({ error: errorMessage }, { status });
   }
 }

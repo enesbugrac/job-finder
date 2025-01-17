@@ -86,6 +86,9 @@ export const authApi = {
   register: async (data: { email: string; password: string }) => {
     return serverAxiosInstance.post("/register", data);
   },
+  refresh: async (data: { refreshToken: string }) => {
+    return serverAxiosInstance.post("/refresh", data);
+  },
 };
 
 export const handleApiError = (error: unknown) => {
