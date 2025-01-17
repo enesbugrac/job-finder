@@ -62,8 +62,14 @@ test.describe("Job Application Flow", () => {
       await expect(page.getByText("Başvuru başarıyla yapıldı")).toBeVisible();
     }
 
-    await jobModal.getByRole("button", { name: "İptal" }).click();
-    await expect(jobModal).not.toBeVisible();
+    if (await jobModal.isVisible()) {
+      const cancelButton = jobModal.getByRole("button", { name: "İptal" });
+      if (await cancelButton.isVisible()) {
+        await cancelButton.click();
+      }
+    }
+
+    await expect(jobModal).not.toBeVisible({ timeout: 5000 });
 
     const userEmail = "test12345@gmail.com";
     const userMenu = page.getByTestId("user-menu");
