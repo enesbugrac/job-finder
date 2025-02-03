@@ -1,24 +1,22 @@
 import { Job } from "@/types";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
 import { Button } from "../ui/Button";
 
 interface ApplicationCardProps {
   job: Job;
-  onWithdraw: (id: string) => void;
+  onWithdraw: (id: string) => Promise<void>;
+  isWithdrawing?: boolean;
 }
 
-export function ApplicationCard({ job, onWithdraw }: ApplicationCardProps) {
+export function ApplicationCard({
+  job,
+  onWithdraw,
+  isWithdrawing = false,
+}: ApplicationCardProps) {
   const { t } = useTranslation();
-  const [isWithdrawing, setIsWithdrawing] = useState(false);
 
   const handleWithdraw = async () => {
-    try {
-      setIsWithdrawing(true);
-      await onWithdraw(job.id);
-    } finally {
-      setIsWithdrawing(false);
-    }
+    await onWithdraw(job.id);
   };
 
   return (

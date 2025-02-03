@@ -6,8 +6,9 @@ import { BiMapPin, BiBriefcase, BiDollar } from "react-icons/bi";
 import { useAuthStore } from "@/lib/store";
 import { toast } from "react-hot-toast";
 import { api } from "@/lib/api";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Button } from "../ui/Button";
+import { useMutation } from "@tanstack/react-query";
 
 interface JobCardProps {
   job: Job;
@@ -18,24 +19,25 @@ export function JobCard({ job, onSelectJob }: JobCardProps) {
   const { t } = useTranslation();
   const user = useAuthStore((state) => state.user);
   const removeApplication = useAuthStore((state) => state.removeApplication);
-  const [isWithdrawing, setIsWithdrawing] = useState(false);
 
   const isApplied = useMemo(
     () => user?.appliedJobs?.includes(job.id) || false,
     [user, job.id]
   );
 
-  const handleWithdraw = async () => {
-    try {
-      setIsWithdrawing(true);
-      await api.jobs.withdraw(job.id);
+  const { mutate: withdrawMutation, isPending } = useMutation({
+    mutationFn: () => api.jobs.withdraw(job.id),
+    onSuccess: () => {
       removeApplication(job.id);
       toast.success(t("jobs.withdrawSuccess"));
-    } catch {
+    },
+    onError: () => {
       toast.error(t("jobs.withdrawError"));
-    } finally {
-      setIsWithdrawing(false);
-    }
+    },
+  });
+
+  const handleWithdraw = async () => {
+    withdrawMutation();
   };
 
   return (
@@ -100,12 +102,12 @@ export function JobCard({ job, onSelectJob }: JobCardProps) {
           {isApplied && (
             <Button
               variant="primary"
-              isLoading={isWithdrawing}
               size="sm"
               onClick={handleWithdraw}
-              disabled={isWithdrawing}
+              isLoading={isPending}
+              disabled={isPending}
             >
-              {isWithdrawing ? t("jobs.withdrawing") : t("jobs.withdraw")}
+              {t("jobs.withdraw")}
             </Button>
           )}
         </div>

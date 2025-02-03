@@ -1,17 +1,22 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { api } from "@/lib/api";
-import { useTranslation } from "react-i18next";
-import { useAuthStore } from "@/lib/store";
-import { Button } from "../ui/Button";
-import { Modal } from "../ui/Modal";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useTranslation } from "react-i18next";
+import { useMutation } from "@tanstack/react-query";
+import { api } from "@/lib/api";
+import { useAuthStore } from "@/lib/store";
+import { toast } from "react-hot-toast";
+import { Button } from "../ui/Button";
+import { Modal } from "../ui/Modal";
 import { getErrorMessage } from "@/lib/utils";
 
-export function LoginModal({ onClose }: { onClose: () => void }) {
+interface LoginModalProps {
+  onClose: () => void;
+}
+
+export function LoginModal({ onClose }: LoginModalProps) {
   const { t } = useTranslation();
 
   const loginSchema = z.object({
@@ -19,36 +24,36 @@ export function LoginModal({ onClose }: { onClose: () => void }) {
     password: z.string().min(8, t("auth.passwordMin")),
   });
 
-  type LoginFormData = z.infer<typeof loginSchema>;
+  type FormData = z.infer<typeof loginSchema>;
 
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const setAuth = useAuthStore((state) => state.setAuth);
 
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<LoginFormData>({
+  } = useForm<FormData>({
     resolver: zodResolver(loginSchema),
     mode: "onChange",
   });
 
-  const onSubmit = async (data: LoginFormData) => {
-    try {
-      setIsLoading(true);
-      const response = await api.auth.login(data);
+  const { mutate: loginUser, isPending } = useMutation({
+    mutationFn: (data: FormData) => api.auth.login(data),
+    onSuccess: (response) => {
       setAuth(response.data);
       onClose();
-    } catch (error) {
-      setError(getErrorMessage(error));
-    } finally {
-      setIsLoading(false);
-    }
+    },
+    onError: (error) => {
+      toast.error(t(getErrorMessage(error)));
+    },
+  });
+
+  const onSubmit = (data: FormData) => {
+    loginUser(data);
   };
 
   return (
-    <Modal onClose={onClose} title={t("login")}>
+    <Modal title={t("login")} onClose={onClose}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
           <label className="block text-text-secondary mb-1">{t("auth.email")}</label>
@@ -62,6 +67,7 @@ export function LoginModal({ onClose }: { onClose: () => void }) {
             <p className="text-sm text-error mt-1">{errors.email.message}</p>
           )}
         </div>
+
         <div>
           <label className="block text-text-secondary mb-1">{t("auth.password")}</label>
           <input
@@ -74,7 +80,7 @@ export function LoginModal({ onClose }: { onClose: () => void }) {
             <p className="text-sm text-error mt-1">{errors.password.message}</p>
           )}
         </div>
-        {error && <p className="text-error text-sm">{error}</p>}
+
         <div className="flex justify-end gap-4">
           <Button variant="ghost" onClick={onClose}>
             {t("cancel")}
@@ -82,8 +88,8 @@ export function LoginModal({ onClose }: { onClose: () => void }) {
           <Button
             variant="primary"
             type="submit"
-            isLoading={isLoading}
-            disabled={!isValid || isLoading}
+            isLoading={isPending}
+            disabled={!isValid || isPending}
           >
             {t("login")}
           </Button>

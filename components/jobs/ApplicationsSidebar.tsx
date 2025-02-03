@@ -2,17 +2,17 @@
 
 import { useAuthStore } from "@/lib/store";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { Job } from "@/types";
 import { toast } from "react-hot-toast";
-import { AxiosError } from "axios";
 import { ApplicationCard } from "./ApplicationCard";
 import { BiUser } from "react-icons/bi";
 import { Button } from "../ui/Button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FaXmark } from "react-icons/fa6";
+import { getErrorMessage } from "@/lib/utils";
 
 export function ApplicationsSidebar({ onClose }: { onClose?: () => void }) {
   const { t } = useTranslation();
@@ -20,6 +20,7 @@ export function ApplicationsSidebar({ onClose }: { onClose?: () => void }) {
   const logout = useAuthStore((state) => state.logout);
   const removeApplication = useAuthStore((state) => state.removeApplication);
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { data: appliedJobs, isLoading } = useQuery({
     queryKey: ["appliedJobs", user?.appliedJobs],
@@ -45,19 +46,20 @@ export function ApplicationsSidebar({ onClose }: { onClose?: () => void }) {
     enabled: !!user?.appliedJobs?.length,
   });
 
-  const handleWithdraw = async (jobId: string) => {
-    try {
-      await api.jobs.withdraw(jobId);
+  const { mutate: withdrawApplication, variables: withdrawingJobId } = useMutation({
+    mutationFn: (jobId: string) => api.jobs.withdraw(jobId),
+    onSuccess: (_, jobId) => {
       removeApplication(jobId);
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
       toast.success(t("jobs.withdrawSuccess"));
-      onClose?.();
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        toast.error(error.response?.data?.message || t("jobs.withdrawError"));
-      } else {
-        toast.error(t("jobs.withdrawError"));
-      }
-    }
+    },
+    onError: (error) => {
+      toast.error(t(getErrorMessage(error)));
+    },
+  });
+
+  const handleWithdraw = async (jobId: string) => {
+    withdrawApplication(jobId);
   };
 
   const handleLogout = () => {
@@ -128,7 +130,11 @@ export function ApplicationsSidebar({ onClose }: { onClose?: () => void }) {
           ) : (
             appliedJobs.map((job, index) => (
               <div key={`${job.id}-${index}`} className="border-b border-border pb-4">
-                <ApplicationCard job={job} onWithdraw={handleWithdraw} />
+                <ApplicationCard
+                  job={job}
+                  onWithdraw={handleWithdraw}
+                  isWithdrawing={withdrawingJobId === job.id}
+                />
               </div>
             ))
           )}
